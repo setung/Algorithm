@@ -3,8 +3,7 @@
 
 int main()
 {
-	sol();
-
+	sol2();
 }
 
 
