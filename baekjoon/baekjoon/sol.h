@@ -537,3 +537,237 @@ void sol1697() {
 }
 #pragma endregion
 
+#pragma region 1012 유기농 배추
+void sol1012() {
+	int t;
+	cin >> t;
+
+	int dx[] = { 0,0,1,-1 };
+	int dy[] = { 1,-1,0,0 };
+	for (int tc = 0; tc < t; tc++) {
+		int n, m, k;
+		cin >> n >> m >> k;
+		vector<vector<int>> _map(n, vector<int>(m, 0));
+		vector<vector<bool>> visit(n, vector<bool>(m, false));
+		queue<pair<int, int>> q;
+		int answer = 0;
+
+		for (int i = 0; i < k; i++) {
+			int a, b;
+			cin >> a >> b;
+			_map[a][b] = 1;
+		}
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				if (_map[i][j] == 1 && visit[i][j] == false) {
+					q.push({ i,j });
+					visit[i][j] = true;
+
+					while (!q.empty()) {
+						int x = q.front().first;
+						int y = q.front().second;
+						q.pop();
+
+						for (int k = 0; k < 4; k++) {
+							int nx = x + dx[k];
+							int ny = y + dy[k];
+
+							if (nx > -1 && nx<n && ny >-1 && ny < m &&
+								_map[nx][ny] == 1 && visit[nx][ny] == false) {
+								q.push({ nx,ny });
+								visit[nx][ny] = true;
+							}
+						}
+					}
+					answer++;
+				}
+			}
+		}
+		cout << answer << '\n';
+	}
+}
+#pragma endregion
+#pragma region 2583 영역 구하기
+void sol2583() {
+	int n, m, k;
+	cin >> n >> m >> k;
+	vector<vector<int>> _map(n, vector<int>(m));
+	vector<vector<bool>> visit(n, vector<bool>(m, false));
+	int dx[] = { 0,0,1,-1 };
+	int dy[] = { 1,-1,0,0 };
+	queue<pair<int, int>> q;
+	vector<int> answer;
+	for (int i = 0; i < k; i++) {
+		int lx, ly, rx, ry;
+		cin >> lx >> ly >> rx >> ry;
+
+		for (int x = lx; x < rx; x++)
+			for (int y = ly; y < ry; y++)
+				_map[y][x] = 1;
+	}
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			if (_map[i][j] == 0 && visit[i][j] == false) {
+				q.push({ i,j });
+				visit[i][j] = true;
+				int size = 1;
+				while (!q.empty()) {
+					int x = q.front().first;
+					int y = q.front().second;
+					q.pop();
+
+					for (int k = 0; k < 4; k++) {
+						int nx = dx[k] + x;
+						int ny = dy[k] + y;
+
+						if (nx > -1 && nx < n && ny > -1 && ny < m &&
+							_map[nx][ny] == 0 && visit[nx][ny] == false) {
+							visit[nx][ny] = true;
+							q.push({ nx,ny });
+							size++;
+						}
+					}
+				}
+				answer.push_back(size);
+			}
+		}
+	}
+
+	sort(answer.begin(), answer.end());
+	cout << answer.size() << '\n';
+	for (int i : answer)
+		cout << i << ' ';
+}
+#pragma endregion
+#pragma region 1026 보물
+void sol1026() {
+	int n;
+	cin >> n;
+	vector<int> v1(n);
+	vector<int> v2(n);
+	int answer = 0;
+	for (int i = 0; i < n; i++)
+		cin >> v1[i];
+	for (int i = 0; i < n; i++)
+		cin >> v2[i];
+
+	sort(v1.begin(), v1.end());
+	sort(v2.rbegin(), v2.rend());
+
+	for (int i = 0; i < n; i++) {
+		answer += v1[i] * v2[i];
+	}
+
+	cout << answer;
+}
+#pragma endregion
+
+#pragma region 1260 DFS와 BFS
+void bfs1260(int n, vector<vector<int>>& graph, int start) {
+	queue<int> q;
+	vector<bool> visit(n + 1, false);
+
+	q.push(start);
+	visit[start] = true;
+
+	while (!q.empty()) {
+		int node = q.front();
+		q.pop();
+
+		cout << node << ' ';
+
+		for (int i = 0; i < graph[node].size(); i++) {
+			if (visit[graph[node][i]] == false) {
+				visit[graph[node][i]] = true;
+				q.push(graph[node][i]);
+			}
+		}
+	}
+}
+void dfs1260(vector<vector<int>>& graph, int start, vector<bool>& visit) {
+	cout << start << ' ';
+	visit[start] = true;
+
+	for (int i = 0; i < graph[start].size(); i++) {
+		if (visit[graph[start][i]] == false) {
+			visit[graph[start][i]] = true;
+			dfs1260(graph, graph[start][i], visit);
+		}
+	}
+}
+void sol1260() {
+	int n, m, start;
+	cin >> n >> m >> start;
+	vector<vector<int>> graph(n + 1);
+
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+		graph[a].push_back(b);
+		graph[b].push_back(a);
+	}
+
+	for (int i = 0; i <= n; i++)
+		sort(graph[i].begin(), graph[i].end());
+
+	vector<bool> visit(n + 1, false);
+	dfs1260(graph, start, visit);
+	cout << '\n';
+	bfs1260(n, graph, start);
+}
+#pragma endregion
+#pragma region 2667 단지번호붙이기
+void sol2667() {
+	int n;
+	cin >> n;
+	vector<vector<int>> _map(n, vector<int>(n));
+	vector<vector<bool>> visit(n, vector<bool>(n, false));
+	queue<pair<int, int>> q;
+	vector<int> answer;
+	int dx[] = { 0,0,-1,1 };
+	int dy[] = { -1,1,0,0 };
+
+	for (int i = 0; i < n; i++) {
+		string s;
+		cin >> s;
+		for (int j = 0; j < s.size(); j++)
+			_map[i][j] = s[j] - '0';
+	}
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (_map[i][j] == 1 && !visit[i][j]) {
+				q.push({ i,j });
+				visit[i][j] = true;
+				int count = 0;
+
+				while (!q.empty()) {
+					int x = q.front().first;
+					int y = q.front().second;
+					q.pop();
+					count++;
+					for (int k = 0; k < 4; k++) {
+						int nx = dx[k] + x;
+						int ny = dy[k] + y;
+
+						if (nx > -1 && ny > -1 && nx < n && ny < n &&
+							_map[nx][ny] == 1 && !visit[nx][ny]) {
+							visit[nx][ny] = true;
+							q.push({ nx,ny });
+						}
+					}
+				}
+				answer.push_back(count);
+			}
+		}
+	}
+
+	sort(answer.begin(), answer.end());
+	cout << answer.size() << '\n';
+	for (int a : answer)
+		cout << a << '\n';
+
+}
+#pragma endregion
