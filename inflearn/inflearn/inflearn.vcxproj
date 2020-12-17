@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{921d27dc-6a2b-49a3-bb1a-4508658437c8}</ProjectGuid>
-    <RootNamespace>programmers</RootNamespace>
+    <ProjectGuid>{8565763f-449a-4955-88a6-1b013b4d20f7}</ProjectGuid>
+    <RootNamespace>inflearn</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -84,8 +84,8 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
@@ -112,8 +112,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
@@ -139,13 +139,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="programmers.cpp" />
+    <ClCompile Include="inflearn.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="lv1.h" />
-    <ClInclude Include="lv2.h" />
-    <ClInclude Include="lv3.h" />
-    <ClInclude Include="lv4.h" />
+    <ClInclude Include="Dynamic.h" />
+    <ClInclude Include="header.h" />
+    <ClInclude Include="Question1to31.h" />
+    <ClInclude Include="Question32to55.h" />
+    <ClInclude Include="Question56to75.h" />
+    <ClInclude Include="Question76to90.h" />
+    <ClInclude Include="resolve.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

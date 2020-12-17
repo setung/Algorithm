@@ -531,6 +531,167 @@ int solution1835(int n, vector<string> data) {
 	return answer;
 }
 #pragma endregion
+#pragma region 12985 예상 대진표
+int solution12985(int n, int a, int b)
+{
+	int answer = 0;
+
+	while (a != b) {
+		answer++;
+		a = (a + 1) / 2;
+		b = (b + 1) / 2;
+	}
+
+	return answer;
+}
+#pragma endregion
+#pragma region 42578 위장	  
+int solution42578(vector<vector<string>> clothes) {
+	int answer = 1;
+	map<string, int> m;
+
+	for (auto arr : clothes) {
+		if (m.find(arr[1]) == m.end()) {
+			m.insert({ arr[1], 2 });
+		}
+		else
+			m.find(arr[1])->second++;
+	}
+
+	for (auto it : m) {
+		answer *= it.second;
+	}
+
+	return answer - 1;
+}
+#pragma endregion
+#pragma region 17679 [1차] 프렌즈4블록
+int bfs17679(int m, int n, vector<string>& board) {
+	int dx[] = { 0,0,-1,1 };
+	int dy[] = { -1,1,0,0 };
+	int deleteCount = 0;
+	queue<pair<int, int>> q;
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++) {
+			if (i + 1 < m && j + 1 < n && board[i][j] != '-' &&
+				board[i][j] == board[i + 1][j] && board[i][j] == board[i + 1][j + 1] &&
+				board[i][j] == board[i][j + 1]) {
+				q.push({ i,j });
+				q.push({ i + 1,j });
+				q.push({ i,j + 1 });
+				q.push({ i + 1,j + 1 });
+			}
+		}
+	}
+
+	while (!q.empty()) {
+		if (board[q.front().first][q.front().second] != '-') {
+			deleteCount++;
+			board[q.front().first][q.front().second] = '-';
+		}
+		q.pop();
+	}
+
+	return deleteCount;
+}
+void newMap17679(int m, int n, vector<string>& board) {
+	for (int i = n - 1; i > -1; i--) {
+		for (int j = m - 1; j > -1; j--) {
+			int k = j;
+			while (k + 1 < m && k > -1 && board[k][i] != '-' && board[k + 1][i] == '-') {
+				board[k + 1][i] = board[k][i];
+				board[k][i] = '-';
+				k++;
+			}
+		}
+	}
+}
+int solution17679(int m, int n, vector<string> board) {
+	int answer = 0;
+
+	while (true) {
+		int deletedCount = bfs17679(m, n, board);
+
+		if (deletedCount == 0)
+			break;
+		else {
+			answer += deletedCount;
+			newMap17679(m, n, board);
+		}
+	}
+	return answer;
+}
+#pragma endregion
+#pragma region 42888 오픈채팅방
+vector<string> solution42888(vector<string> record) {
+	vector<string> answer;
+	map<string, string> ids;
+	vector<pair<string, string>> ops;
+
+	for (string str : record) {
+		vector<string> pars;
+		string s;
+		for (int i = 0; i < str.size(); i++) {
+			if (str[i] == ' ') {
+				pars.push_back(s);
+				s = "";
+			}
+			else {
+				s += str[i];
+			}
+		}
+		pars.push_back(s);
+
+		if (pars[0][0] == 'E') {
+			if (ids.find(pars[1]) == ids.end())
+				ids.insert({ pars[1],pars[2] });
+			else
+				ids[pars[1]] = pars[2];
+		}
+		else if (pars[0][0] == 'C') {
+			ids[pars[1]] = pars[2];
+		}
+
+		ops.push_back({ pars[0], pars[1] });
+	}
+
+	for (auto op : ops) {
+		if (op.first[0] == 'E') {
+			answer.push_back(ids[op.second] + "님이 들어왔습니다.");
+		}
+		else if (op.first[0] == 'L') {
+			answer.push_back(ids[op.second] + "님이 나갔습니다.");
+		}
+	}
+
+	return answer;
+}
+#pragma endregion
+#pragma region 12953 N개의 최소공배수  
+int gcd12953(int x, int y) { return x % y == 0 ? y : gcd12953(y, x % y); }
+int lcm12953(int x, int y) { return x * y / gcd12953(x, y); }
+int solution12953(vector<int> arr) {
+	int answer = arr[0];
+	for (int i = 1; i < arr.size(); i++)
+		answer = lcm12953(answer, arr[i]);
+	return answer;
+}
+#pragma endregion
+#pragma region 12941 최솟값 만들기  
+int solution12941(vector<int> A, vector<int> B)
+{
+	int answer = 0;
+
+	sort(A.begin(), A.end());
+	sort(B.rbegin(), B.rend());
+
+	for (int i = 0; i < A.size(); i++) {
+		answer += (A[i] * B[i]);
+	}
+
+	return answer;
+}
+#pragma endregion
 
 /*
 	스킬트리
@@ -852,14 +1013,142 @@ int solution42885(vector<int> people, int limit) {
 	return answer;
 }
 #pragma endregion
+/*
+	LRU 를 제대로 이해 못했었음.
+*/
+#pragma region 17680 [1차] 캐시 
+int solution17680(int cacheSize, vector<string> cities) {
+		int answer = 0;
+		deque<string> dq;
 
+		if (cacheSize == 0)
+			return cities.size() * 5;
+
+		for (int j = 0; j < cities.size(); j++) {
+			for (int i = 0; i < cities[j].size(); i++) {
+				if (cities[j][i] >= 'A' && cities[j][i] <= 'Z')
+					cities[j][i] ^= 32;
+			}
+		}
+
+		for (string city : cities) {
+			bool isExist = false;
+			if(!dq.empty())
+				for (auto it = dq.begin(); it != dq.end(); it++) {
+					if (*it == city) {
+						answer += 1;
+						isExist = true;
+						dq.erase(it);
+						dq.push_back(city);
+						break;
+					}
+				}
+
+			if (!isExist) {
+				if (dq.size() == cacheSize && !dq.empty())
+					dq.pop_front();	
+				dq.push_back(city);
+				answer += 5;
+			}
+		}
+
+		return answer;
+}
+#pragma endregion
+
+#pragma region 64065 튜플
+vector<int> solution64065(string s) {
+	vector<int> answer;
+	map<int, int> m;
+
+	string temp;
+	for (char c : s) {
+		if (c >= '0' && c <= '9')
+			temp += c;
+		else if (temp != "" && (c == '}' || c == ',')) {
+			if ( m.find(stoi(temp)) == m.end())
+				m.insert({ stoi(temp),1 });
+			else
+				m[stoi(temp)]++;
+			temp = "";
+		}
+	}
+	vector<pair<int, int>> vec(m.begin(), m.end());
+
+	sort(vec.begin(), vec.end(), [](pair<int, int> p1, pair<int, int> p2) ->bool {
+		return p1.second > p2.second;
+	});
+
+	for (auto a : vec)
+		answer.push_back(a.first);
+
+	return answer;
+}
+#pragma endregion
+#pragma region 17677 [1차] 뉴스 클러스터링
+int solution17677(string str1, string str2) {
+	int answer = 0;
+	map<string, int> m1;
+	map<string, int> m2;
+	int sum = 0;
+	int n = 0;
+	for(int i =0; i<str1.size(); i++)
+		if (str1[i] >= 'A' && str1[i] <= 'Z')
+			str1[i] ^= 32;
+	for (int i = 0; i < str2.size(); i++)
+		if (str2[i] >= 'A' && str2[i] <= 'Z')
+			str2[i] ^= 32;
+
+	for (int i = 0; i < str1.size()-1; i++) {
+
+		if (str1[i] >= 'a' && str1[i] <= 'z' &&
+			str1[i + 1] >= 'a' && str1[i + 1] <= 'z') {
+			string temp = str1.substr(i, 2);
+			
+			if (m1.find(temp) == m1.end())
+				m1.insert({ temp,1 });
+			else
+				m1[temp]++;
+			sum++;
+		}
+	}
+	for (int i = 0; i < str2.size() - 1; i++) {
+		if (str2[i] >= 'a' && str2[i] <= 'z' &&
+			str2[i + 1] >= 'a' && str2[i + 1] <= 'z') {
+			string temp = str2.substr(i, 2);
+
+			if (m2.find(temp) == m2.end())
+				m2.insert({ temp,1 });
+			else
+				m2[temp]++;
+
+			sum++;
+		}
+	}
+
+	for (auto it = m1.begin(); it != m1.end(); it++) {
+		for (auto it2 = m2.begin(); it2 != m2.end(); it2++) {
+			if (it->first == it2->first) {
+				n += min(it->second, it2->second);
+			}
+		}
+	}
+	sum -= n;
+
+	if (sum == 0 || n == 0)
+		answer = 65536;
+	else
+		answer = int(((double)n / (double)sum) * 65536);
+
+
+	return answer;
+}
+#pragma endregion
 
 
 
 #pragma region sol  
 void sol2() {
-
-
 }
 #pragma endregion
 
