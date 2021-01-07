@@ -76,3 +76,8 @@ count(v.begin(), v.end(), 1);
 			cout << a;
 		cout << '\n';
 	} while (next_permutation(v.begin(), v.end()));
+
+
+
+
+array(배열) vector(배열) list(양방향 리스트) foward_list(단방향 리스트) deque(양방향 큐)

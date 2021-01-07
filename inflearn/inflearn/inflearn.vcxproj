@@ -149,6 +149,7 @@
     <ClInclude Include="Question56to75.h" />
     <ClInclude Include="Question76to90.h" />
     <ClInclude Include="resolve.h" />
+    <ClInclude Include="resolve2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

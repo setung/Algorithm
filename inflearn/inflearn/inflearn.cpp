@@ -1,4 +1,4 @@
-﻿#include "resolve.h"
+﻿#include "resolve2.h"
 
 
 int main()
@@ -6,7 +6,7 @@ int main()
      ios_base::sync_with_stdio(false);
      cin.tie(NULL);
 
-	 DQ2();
+	 re2();
 	 
 }
 

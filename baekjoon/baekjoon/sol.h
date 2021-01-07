@@ -12,7 +12,6 @@
 #include <vector>
 using namespace std;
 
-
 #pragma region 2557 Hello World
 void sol2557() {
 	cout << "Hello World!";
@@ -367,7 +366,6 @@ void sol1919() {
 
 }
 #pragma endregion
-
 #pragma region 1926 그림
 void sol1926() {
 	int n, m;
@@ -536,7 +534,6 @@ void sol1697() {
 	}
 }
 #pragma endregion
-
 #pragma region 1012 유기농 배추
 void sol1012() {
 	int t;
@@ -663,7 +660,6 @@ void sol1026() {
 	cout << answer;
 }
 #pragma endregion
-
 #pragma region 1260 DFS와 BFS
 void bfs1260(int n, vector<vector<int>>& graph, int start) {
 	queue<int> q;
@@ -769,5 +765,826 @@ void sol2667() {
 	for (int a : answer)
 		cout << a << '\n';
 
+}
+#pragma endregion
+#pragma region 15649 N과 M (1)
+void dfs15649(int n, int m, vector<int> v, vector<bool> visit) {
+	if (v.size() == m) {
+		for (int a : v)
+			cout << a << ' ';
+		cout << '\n';
+	}
+	else {
+		for (int i = 1; i < n + 1; i++) {
+			if (!visit[i]) {
+				v.push_back(i);
+				visit[i] = true;
+				dfs15649(n, m, v, visit);
+				v.pop_back();
+				visit[i] = false;
+			}
+
+		}
+	}
+}
+
+void sol15649() {
+	int n, m;
+	cin >> n >> m;
+
+	vector<int> v;
+	vector<bool> visit(n + 1, false);
+	dfs15649(n, m, v, visit);
+}
+#pragma endregion
+#pragma region 11729 하노이 탑 이동 순서
+void hanoi11729(int n, char a, char b, char c, vector<pair<char, char>>& v) {
+	if (n == 1) {
+		v.push_back({ a,c });
+	}
+	else {
+		hanoi11729(n - 1, a, c, b, v);
+		v.push_back({ a,c });
+		hanoi11729(n - 1, b, a, c, v);
+	}
+}
+
+void sol11729() {
+	int n;
+	cin >> n;
+	vector<pair<char, char>> v;
+
+	hanoi11729(n, '1', '2', '3', v);
+
+	cout << v.size() << '\n';
+	for (auto a : v)
+		cout << a.first << ' ' << a.second << '\n';
+}
+#pragma endregion
+#pragma region 17478 재귀함수가 뭔가요?
+void recur17478(int n, int l) {
+	string bar = "";
+	for (int i = 0; i < l; i++)
+		bar += "____";
+
+	if (n == l) {
+		cout << bar << "\"재귀함수가 뭔가요?\"\n";
+		cout << bar << "\"재귀함수는 자기 자신을 호출하는 함수라네\"\n";
+		cout << bar << "라고 답변하였지.\n";
+	}
+	else if (n > l) {
+
+		cout << bar << "\"재귀함수가 뭔가요?\"\n";
+		cout << bar << "\"잘 들어보게. 옛날옛날 한 산 꼭대기에 이세상 모든 지식을 통달한 선인이 있었어.\n";
+		cout << bar << "마을 사람들은 모두 그 선인에게 수많은 질문을 했고, 모두 지혜롭게 대답해 주었지.\n";
+		cout << bar << "그의 답은 대부분 옳았다고 하네. 그런데 어느 날, 그 선인에게 한 선비가 찾아와서 물었어.\"\n";
+		recur17478(n, l + 1);
+		cout << bar << "라고 답변하였지.";
+		if (l != 0)
+			cout << '\n';
+	}
+}
+void sol17478() {
+	int n;
+	cin >> n;
+
+	cout << "어느 한 컴퓨터공학과 학생이 유명한 교수님을 찾아가 물었다.\n";
+	recur17478(n, 0);
+}
+#pragma endregion
+#pragma region 1992 쿼드트리
+void recur1992(int n, int x, int y, vector<vector<int>>& _map, string& answer) {
+
+	int v = _map[x][y];
+	int cnt = 0;
+	bool isOne = true;
+
+	for (int i = x; i < x + n; i++) {
+		for (int j = y; j < y + n; j++) {
+			if (v != _map[i][j]) {
+				isOne = false;
+				break;
+			}
+		}
+
+		if (!isOne)
+			break;
+	}
+
+	if (!isOne) {
+		answer += "(";
+
+		recur1992(n / 2, x, y, _map, answer);
+		recur1992(n / 2, x, y + n / 2, _map, answer);
+		recur1992(n / 2, x + n / 2, y, _map, answer);
+		recur1992(n / 2, x + n / 2, y + n / 2, _map, answer);
+
+		answer += ")";
+	}
+	else {
+		answer += v + '0';
+	}
+
+}
+void sol1992() {
+	int n;
+	cin >> n;
+	vector<vector<int>> _map(n, vector<int>(n));
+	string answer;
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++) {
+			char c;
+			cin >> c;
+			_map[i][j] = c - '0';
+		}
+
+	recur1992(n, 0, 0, _map, answer);
+	cout << answer;
+}
+#pragma endregion
+#pragma region 15651 N과 M (3)
+void func15651(int n, int m, vector<int> num) {
+	if (num.size() == m) {
+		for (int i = 0; i < m; i++)
+			cout << num[i] << ' ';
+		cout << '\n';
+	}
+	else {
+		for (int i = 1; i <= n; i++) {
+			num.push_back(i);
+			func15651(n, m, num);
+			num.pop_back();
+		}
+	}
+}
+
+void sol15651() {
+	int n, m;
+	cin >> n >> m;
+
+	func15651(n, m, {});
+
+}
+#pragma endregion
+#pragma region 15652 N과 M (4)
+void func15652(int n, int m, int index, vector<int> num) {
+	if (num.size() == m) {
+		for (int i = 0; i < m; i++)
+			cout << num[i] << ' ';
+		cout << '\n';
+	}
+	else {
+		for (int i = index; i <= n; i++) {
+			num.push_back(i);
+			func15652(n, m, i, num);
+			num.pop_back();
+		}
+	}
+}
+
+void sol15652() {
+	int n, m;
+	cin >> n >> m;
+
+	func15652(n, m, 1, {});
+}
+#pragma endregion
+#pragma region 15654 N과 M (5)
+void func15654(int n, int m, vector<pair<int, bool>>& v, vector<int> num) {
+	if (num.size() == m) {
+		for (int i = 0; i < m; i++)
+			cout << num[i] << ' ';
+		cout << '\n';
+	}
+	else {
+		for (int i = 0; i < n; i++) {
+			if (v[i].second == false) {
+				v[i].second = true;
+				num.push_back(v[i].first);
+				func15654(n, m, v, num);
+				v[i].second = false;
+				num.pop_back();
+			}
+		}
+	}
+}
+
+void sol15654() {
+	int n, m;
+	cin >> n >> m;
+	vector<pair<int, bool>> v(n);
+
+	for (int i = 0; i < n; i++) {
+		int nn;
+		cin >> nn;
+		v[i] = { nn,false };
+	}
+
+	sort(v.begin(), v.end());
+
+	func15654(n, m, v, {});
+}
+#pragma endregion
+#pragma region 15655 N과 M (6)
+void func15655(int n, int m, int index, vector<pair<int, bool>>& v, vector<int> num) {
+	if (num.size() == m) {
+		for (int i = 0; i < m; i++)
+			cout << num[i] << ' ';
+		cout << '\n';
+	}
+	else {
+		for (int i = index; i < n; i++) {
+			if (v[i].second == false) {
+				v[i].second = true;
+				num.push_back(v[i].first);
+				func15655(n, m, i, v, num);
+				v[i].second = false;
+				num.pop_back();
+			}
+		}
+	}
+}
+
+void sol15655() {
+	int n, m;
+	cin >> n >> m;
+	vector<pair<int, bool>> v(n);
+
+	for (int i = 0; i < n; i++) {
+		int nn;
+		cin >> nn;
+		v[i] = { nn,false };
+	}
+
+	sort(v.begin(), v.end());
+
+	func15655(n, m, 0, v, {});
+}
+#pragma endregion
+#pragma region 15656 N과 M (7)
+void func15656(int n, int m, vector<int>& v, vector<int> num) {
+	if (num.size() == m) {
+		for (int i = 0; i < m; i++)
+			cout << num[i] << ' ';
+		cout << '\n';
+	}
+	else {
+		for (int i = 0; i < n; i++) {
+			num.push_back(v[i]);
+			func15656(n, m, v, num);
+			num.pop_back();
+		}
+	}
+}
+
+void sol15656() {
+	int n, m;
+	cin >> n >> m;
+	vector<int> v(n);
+
+	for (int i = 0; i < n; i++) {
+		cin >> v[i];
+	}
+
+	sort(v.begin(), v.end());
+
+	func15656(n, m, v, {});
+}
+#pragma endregion
+#pragma region 15663 N과 M (9)
+void func15663(int n, int m, vector<int>& v, vector<bool>& visit, vector<int> num, set<vector<int>>& _set) {
+	if (num.size() == m) {
+		_set.insert(num);
+	}
+	else {
+		for (int i = 0; i < n; i++) {
+			if (!visit[i]) {
+				visit[i] = true;
+				num.push_back(v[i]);
+				func15663(n, m, v, visit, num, _set);
+				num.pop_back();
+				visit[i] = false;
+			}
+		}
+	}
+}
+
+void sol15663() {
+	int n, m;
+	cin >> n >> m;
+	vector<int> v(n);
+	vector<bool> visit(n, false);
+	set<vector<int>> _set;
+
+	for (int i = 0; i < n; i++) {
+		cin >> v[i];
+	}
+
+	sort(v.begin(), v.end());
+	func15663(n, m, v, visit, {}, _set);
+
+	for (auto it : _set) {
+		for (int a : it) {
+			cout << a << ' ';
+		}
+		cout << '\n';
+	}
+}
+#pragma endregion
+#pragma region 15664 N과 M (10)
+void func15664(int n, int m, int index, vector<int>& v, vector<bool>& visit, vector<int> num, set<vector<int>>& _set) {
+	if (num.size() == m) {
+		_set.insert(num);
+	}
+	else {
+		for (int i = index; i < n; i++) {
+			if (!visit[i]) {
+				visit[i] = true;
+				num.push_back(v[i]);
+				func15664(n, m, i, v, visit, num, _set);
+				num.pop_back();
+				visit[i] = false;
+			}
+		}
+	}
+}
+
+void sol15664() {
+	int n, m;
+	cin >> n >> m;
+	vector<int> v(n);
+	vector<bool> visit(n, false);
+	set<vector<int>> _set;
+
+	for (int i = 0; i < n; i++) {
+		cin >> v[i];
+	}
+
+	sort(v.begin(), v.end());
+	func15664(n, m, 0, v, visit, {}, _set);
+
+	for (auto it : _set) {
+		for (int a : it) {
+			cout << a << ' ';
+		}
+		cout << '\n';
+	}
+}
+#pragma endregion
+#pragma region 15665 N과 M (11)
+void func15665(int n, int m, vector<int>& v, vector<int> num, set<vector<int>>& _set) {
+	if (num.size() == m) {
+		_set.insert(num);
+	}
+	else {
+		for (int i = 0; i < n; i++) {
+			num.push_back(v[i]);
+			func15665(n, m, v, num, _set);
+			num.pop_back();
+		}
+	}
+}
+
+void sol15665() {
+	int n, m;
+	cin >> n >> m;
+	vector<int> v(n);
+	set<vector<int>> _set;
+
+	for (int i = 0; i < n; i++) {
+		cin >> v[i];
+	}
+
+	sort(v.begin(), v.end());
+	func15665(n, m, v, {}, _set);
+
+	for (auto it : _set) {
+		for (int a : it) {
+			cout << a << ' ';
+		}
+		cout << '\n';
+	}
+}
+#pragma endregion
+#pragma region 15666 N과 M (12)
+void func15666(int n, int m, int index, vector<int>& v, vector<int> num, set<vector<int>>& _set) {
+	if (num.size() == m) {
+		_set.insert(num);
+	}
+	else {
+		for (int i = index; i < n; i++) {
+			num.push_back(v[i]);
+			func15666(n, m, i, v, num, _set);
+			num.pop_back();
+		}
+	}
+}
+
+void sol15666() {
+	int n, m;
+	cin >> n >> m;
+	vector<int> v(n);
+	set<vector<int>> _set;
+
+	for (int i = 0; i < n; i++) {
+		cin >> v[i];
+	}
+
+	sort(v.begin(), v.end());
+	func15666(n, m, 0, v, {}, _set);
+
+	for (auto it : _set) {
+		for (int a : it) {
+			cout << a << ' ';
+		}
+		cout << '\n';
+	}
+}
+#pragma endregion
+#pragma region 9663 N-Queen 
+void func9663(int n, int x, vector<int>& col, int& answer) {
+	if (n == x) {
+		answer++;
+	}
+	else {
+		for (int i = 0; i < n; i++) {
+			col[x] = i;
+
+			bool canLocate = true;
+
+			for (int j = 0; j < x; j++) {
+				if (col[x] == col[j] ||
+					abs(col[x] - col[j]) == abs(x - j)) {
+					canLocate = false;
+					break;
+				}
+			}
+
+			if (canLocate)
+				func9663(n, x + 1, col, answer);
+		}
+	}
+}
+
+void sol9663() {
+	int n;
+	int answer = 0;
+	cin >> n;
+	vector<int> col(n, 0);
+	func9663(n, 0, col, answer);
+	cout << answer;
+}
+#pragma endregion
+#pragma region 11650 좌표 정렬하기 
+void sol11650() {
+	int n;
+	cin >> n;
+	vector<pair<int, int>> v(n);
+
+	for (int i = 0; i < n; i++) {
+		int a, b;
+		cin >> a >> b;
+		v[i] = { a,b };
+	}
+
+	sort(v.begin(), v.end(), [](pair<int, int> a, pair<int, int> b) ->bool {
+		if (a.first == b.first)
+			return a.second < b.second;
+		else
+			return a.first < b.first;
+	});
+
+	for (int i = 0; i < n; i++) {
+		cout << v[i].first << ' ' << v[i].second << '\n';
+	}
+}
+#pragma endregion
+#pragma region 1463 1로 만들기
+void sol1463() {
+	int n;
+	cin >> n;
+	vector<int> dp(1000001, 0);
+
+	if (n < 4) {
+		if (n == 1)
+			cout << 0;
+		else
+			cout << n;
+	}
+
+	dp[2] = 1;
+	dp[3] = 1;
+
+
+	for (int i = 4; i < n + 1; i++) {
+		if (i % 2 == 0 && i % 3 == 0) {
+			dp[i] = min(dp[i - 1], min(dp[i / 2], dp[i / 3])) + 1;
+		}
+		else if (i % 2 == 0) {
+			dp[i] = min(dp[i - 1], dp[i / 2]) + 1;;
+		}
+		else if (i % 3 == 0) {
+			dp[i] = min(dp[i - 1], dp[i / 3]) + 1;
+		}
+		else {
+			dp[i] = dp[i - 1] + 1;
+		}
+	}
+
+	cout << dp[n];
+}
+#pragma endregion
+#pragma region 11726 2×n 타일링 1
+void sol11726() {
+	int n;
+	cin >> n;
+	vector<int> dp(1001);
+	dp[1] = 1;
+	dp[2] = 2;
+
+	for (int i = 3; i < n + 1; i++)
+		dp[i] = (dp[i - 2] + dp[i - 1]) % 10007;
+
+	cout << dp[n];
+}
+#pragma endregion
+#pragma region 11727 2×n 타일링 2
+void sol11727() {
+	int n;
+	cin >> n;
+	vector<int> dp(1001);
+	dp[1] = 1;
+	dp[2] = 3;
+
+	for (int i = 3; i < n + 1; i++)
+		dp[i] = (dp[i - 2] * 2 + dp[i - 1]) % 10007;
+
+	cout << dp[n];
+}
+#pragma endregion
+#pragma region 9095 1, 2, 3 더하기
+void sol9095() {
+	int tc;
+	cin >> tc;
+
+	for (int t = 0; t < tc; t++) {
+		int n;
+		cin >> n;
+		vector<int> dp(12);
+		dp[1] = 1;
+		dp[2] = 2;
+		dp[3] = 4;
+
+		for (int i = 4; i <= n; i++)
+			dp[i] = dp[i - 1] + dp[i - 2] + dp[i - 3];
+
+		cout << dp[n] << '\n';
+	}
+}
+#pragma endregion
+#pragma region 2193 이친수 
+void sol2193() {
+	int n;
+	cin >> n;
+	vector<long long> dp(91);
+	dp[1] = 1;
+	dp[2] = 1;
+
+	for (int i = 3; i < 91; i++)
+		dp[i] = dp[i - 1] + dp[i - 2];
+
+	cout << dp[n];
+}
+#pragma endregion
+#pragma region 1918 후위 표기식   
+int getPrio1918(char c) {
+	if (c == '*' || c == '/')
+		return 3;
+	else if (c == '+' || c == '-')
+		return 2;
+	else
+		return 1;
+}
+
+int getOpGap1918(char c1, char c2) {
+	return getPrio1918(c1) - getPrio1918(c2);
+}
+
+void sol1918() {
+	string s;
+	cin >> s;
+	stack<char> _stack;
+	string answer;
+
+	for (char c : s) {
+		if (c >= 'A' && c <= 'Z')
+			answer += c;
+		else {
+			if (c == '(')
+				_stack.push(c);
+			else if (c == ')') {
+				while (!_stack.empty()) {
+					if (_stack.top() == '(') {
+						_stack.pop();
+						break;
+					}
+					else {
+						answer += _stack.top();
+						_stack.pop();
+					}
+				}
+			}
+			else {
+				while (!_stack.empty() && getOpGap1918(_stack.top(), c) >= 0) {
+					answer += _stack.top();
+					_stack.pop();
+				}
+
+				_stack.push(c);
+			}
+		}
+	}
+
+	while (!_stack.empty()) {
+		if (_stack.top() != '(')
+			answer += _stack.top();
+		_stack.pop();
+	}
+
+	cout << answer;
+}
+#pragma endregion
+
+
+/*
+	도저히 생각해내지 못했다..
+	지수 공식을 사용해서 시간복잡도를 n-> logN으로 할 수 있다니.
+*/
+#pragma region 1629 곱셉
+int power1629(int a, int b, int c) {
+	if (b == 0) return 1;
+
+	int temp = power1629(a, b / 2, c);
+	int result = (1LL * temp * temp) % c;
+
+	if (b % 2) result = 1LL * result * a % c;
+
+	return result;
+}
+void sol1629() {
+	int a, b, c;
+	cin >> a >> b >> c;
+
+	cout << power1629(a, b, c);
+}
+#pragma endregion
+/*
+	풀긴 했으니 다른 풀이가 참신함
+	index 값을 매개변수로 넣어 숫자들을 오름차순으로 만듬.
+*/
+#pragma region 15650 N과 M (2)
+void func15650(int n, int m, int index, vector<int> num) {
+	if (num.size() == m) {
+		for (int i = 0; i < m; i++)
+			cout << num[i] << ' ';
+		cout << '\n';
+	}
+	else {
+		for (int i = index; i <= n; i++) {
+			num.push_back(i);
+			func15650(n, m, i + 1, num);
+			num.pop_back();
+		}
+	}
+}
+
+void sol15650() {
+	int n, m;
+	cin >> n >> m;
+
+	func15650(n, m, 1, {});
+}
+#pragma endregion
+/*
+	문제 자체는 어렵지 않았음.
+	union 배열에 1과 연결된 노드들은 모두 1로 저장될 줄 알았으나
+	그게 아님. 한버더 findParent 함수로 1과 연결 되어있는지 확인해야함.
+*/
+#pragma region 2606 바이러스 
+int findParent2606(vector<int>& _union, int a) {
+	if (_union[a] == a) return a;
+	else
+		return _union[a] = findParent2606(_union, _union[a]);
+}
+
+void unionNode2606(vector<int>& _union, int a, int b) {
+	a = findParent2606(_union, a);
+	b = findParent2606(_union, b);
+
+	if (a > b)
+		_union[a] = b;
+	else
+		_union[b] = a;
+}
+
+void sol2606() {
+	int n, m;
+	cin >> n >> m;
+	vector<int> _union(n + 1);
+
+	for (int i = 1; i < n + 1; i++)
+		_union[i] = i;
+
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+
+		unionNode2606(_union, a, b);
+	}
+
+	int answer = 0;
+	for (int i = 2; i < n + 1; i++) {
+		if (findParent2606(_union, _union[i]) == 1)
+			answer++;
+	}
+
+	cout << answer;
+}
+#pragma endregion
+/*
+	이런 점화식은 좀.. 바로 알아내기 힘들었음.
+*/
+#pragma region 9465 스티커  
+void sol9465() {
+	int tc;
+	cin >> tc;
+
+	for (int t = 0; t < tc; t++) {
+		int n;
+		cin >> n;
+		vector<vector<int>> arr(2, vector<int>(n + 1));
+		vector<vector<int>> dp(2, vector<int>(n + 1));
+
+		for (int i = 0; i < 2; i++)
+			for (int j = 1; j <= n; j++)
+				cin >> arr[i][j];
+
+		dp[0][1] = arr[0][1];
+		dp[1][1] = arr[1][1];
+
+		for (int j = 2; j <= n; j++) {
+			dp[0][j] = max(dp[1][j - 2], dp[1][j - 1]) + arr[0][j];
+			dp[1][j] = max(dp[0][j - 2], dp[0][j - 1]) + arr[1][j];
+		}
+
+		cout << max(dp[0][n], dp[1][n]) << '\n';
+	}
+}
+#pragma endregion
+/*
+	vector, list 삽입,삭제시 시간 복잡도를 생각했어야함.
+	그리고 list의 it는 it+1 연산은 안되지만 it++ 은 됨.
+*/
+#pragma region 1406 에디터   
+void sol1406() {
+	string s;
+	int n;
+	cin >> s >> n;
+
+	list<char> str;
+
+	for (char c : s)
+		str.push_back(c);
+
+	auto cursor = str.end();
+
+	for (int i = 0; i < n; i++) {
+		char op;
+		cin >> op;
+
+		if (op == 'L') {
+			if (cursor != str.begin())
+				cursor--;
+		}
+		else if (op == 'D') {
+			if (cursor != str.end())
+				cursor++;
+		}
+		else if (op == 'B') {
+			if (cursor != str.begin()) {
+				cursor--;
+				cursor = str.erase(cursor);
+			}
+		}
+		else if (op == 'P') {
+			char newC;
+			cin >> newC;
+			cursor = str.insert(cursor, newC);
+			cursor++;
+		}
+	}
+
+	for (auto it = str.begin(); it != str.end(); it++)
+		cout << *it;
 }
 #pragma endregion

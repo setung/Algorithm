@@ -692,6 +692,229 @@ int solution12941(vector<int> A, vector<int> B)
 	return answer;
 }
 #pragma endregion
+#pragma region 64065 튜플
+vector<int> solution64065(string s) {
+	vector<int> answer;
+	map<int, int> m;
+
+	string temp;
+	for (char c : s) {
+		if (c >= '0' && c <= '9')
+			temp += c;
+		else if (temp != "" && (c == '}' || c == ',')) {
+			if ( m.find(stoi(temp)) == m.end())
+				m.insert({ stoi(temp),1 });
+			else
+				m[stoi(temp)]++;
+			temp = "";
+		}
+	}
+	vector<pair<int, int>> vec(m.begin(), m.end());
+
+	sort(vec.begin(), vec.end(), [](pair<int, int> p1, pair<int, int> p2) ->bool {
+		return p1.second > p2.second;
+	});
+
+	for (auto a : vec)
+		answer.push_back(a.first);
+
+	return answer;
+}
+#pragma endregion
+#pragma region 17677 [1차] 뉴스 클러스터링
+int solution17677(string str1, string str2) {
+	int answer = 0;
+	map<string, int> m1;
+	map<string, int> m2;
+	int sum = 0;
+	int n = 0;
+	for(int i =0; i<str1.size(); i++)
+		if (str1[i] >= 'A' && str1[i] <= 'Z')
+			str1[i] ^= 32;
+	for (int i = 0; i < str2.size(); i++)
+		if (str2[i] >= 'A' && str2[i] <= 'Z')
+			str2[i] ^= 32;
+
+	for (int i = 0; i < str1.size()-1; i++) {
+
+		if (str1[i] >= 'a' && str1[i] <= 'z' &&
+			str1[i + 1] >= 'a' && str1[i + 1] <= 'z') {
+			string temp = str1.substr(i, 2);
+			
+			if (m1.find(temp) == m1.end())
+				m1.insert({ temp,1 });
+			else
+				m1[temp]++;
+			sum++;
+		}
+	}
+	for (int i = 0; i < str2.size() - 1; i++) {
+		if (str2[i] >= 'a' && str2[i] <= 'z' &&
+			str2[i + 1] >= 'a' && str2[i + 1] <= 'z') {
+			string temp = str2.substr(i, 2);
+
+			if (m2.find(temp) == m2.end())
+				m2.insert({ temp,1 });
+			else
+				m2[temp]++;
+
+			sum++;
+		}
+	}
+
+	for (auto it = m1.begin(); it != m1.end(); it++) {
+		for (auto it2 = m2.begin(); it2 != m2.end(); it2++) {
+			if (it->first == it2->first) {
+				n += min(it->second, it2->second);
+			}
+		}
+	}
+	sum -= n;
+
+	if (sum == 0 || n == 0)
+		answer = 65536;
+	else
+		answer = int(((double)n / (double)sum) * 65536);
+
+
+	return answer;
+}
+#pragma endregion
+#pragma region 60057 문자열 압축
+int func60057(string s, int size) {
+	string str = s.substr(0, size);
+	vector<pair<string, int>> v;
+	v.push_back({ str,1 });
+	int n = 0;
+	for (int i = size; i < s.size(); i += size) {
+		if (str == s.substr(i, size)) {
+			v.back().second++;
+		}
+		else {
+			str = s.substr(i, size);
+			v.push_back({ str,1 });
+		}
+	}
+
+	for (auto a : v) {
+		if (a.second != 1)
+		{
+			int temp = a.second;
+			while (temp != 0) {
+				n += 1;
+				temp /= 10;
+			}
+		}
+
+		n += a.first.size();
+	}
+
+	return n;
+}
+int solution60057(string s) {
+	int n = s.size();
+	int answer = n;
+
+	for (int i = 1; i <= n; i++) {
+		int minSize = func60057(s, i);
+		cout << i << " " << minSize << '\n';
+		if (answer > minSize) {
+			answer = minSize;
+		}
+	}
+
+	return answer;
+}
+#pragma endregion
+#pragma region 60058 괄호 변환
+void getUV60058(string p, string& u, string& v) {
+	u = "";
+	v = "";
+	int cnt = 0;
+	int i = 0;
+	for (i = 0; i < p.size(); i++) {
+		if (p[i] == '(') cnt++;
+		else cnt--;
+
+		u += p[i];
+
+		if (cnt == 0) break;
+	}
+
+	for (i = i + 1; i < p.size(); i++) {
+		v += p[i];
+	}
+
+}
+
+bool isCorrect60058(string str) {
+	stack<char> s;
+
+	for (char c : str) {
+		if (c == '(')
+			s.push(c);
+		else {
+			if (s.empty())
+				return false;
+			else
+				s.pop();
+		}
+	}
+
+	if (s.empty()) return true;
+	else return false;
+}
+
+string solution60058(string p) {
+	string answer = "";
+	string u, v;
+
+	while (true) {
+		getUV60058(p, u, v);
+
+		if (isCorrect60058(u)) {
+			answer += u;
+			p = v;
+		}
+		else {
+			string newU;
+			for (int i = 1; i < u.size() - 1; i++) {
+				if (u[i] == '(')
+					newU += ')';
+				else
+					newU += '(';
+			}
+
+			p = "(" + solution60058(v) + ")" + newU;
+		}
+
+		if (isCorrect60058(p)) {
+			answer += p;
+			break;
+		}
+	}
+
+	return answer;
+}
+#pragma endregion
+#pragma region 42842 카펫
+vector<int> solution42842(int brown, int yellow) {
+	int wh = brown + yellow;
+
+	for (int i = 1; i <= wh; i++) {
+		int h = i;
+		int w;
+
+		if (wh % h != 0)
+			continue;
+
+		w = wh / h;
+
+		if (2 * (w + h - 2) == brown)
+			return { w,h };
+	}
+}
+#pragma endregion
 
 /*
 	스킬트리
@@ -1055,93 +1278,70 @@ int solution17680(int cacheSize, vector<string> cities) {
 		return answer;
 }
 #pragma endregion
+/*
+	왜 생각을 못하지.
+	풀이를 보면 단순함
+*/
+#pragma region 12980 점프와 순간 이동 
+int solution12980(int n)
+{
+	int ans = 0;
 
-#pragma region 64065 튜플
-vector<int> solution64065(string s) {
-	vector<int> answer;
-	map<int, int> m;
-
-	string temp;
-	for (char c : s) {
-		if (c >= '0' && c <= '9')
-			temp += c;
-		else if (temp != "" && (c == '}' || c == ',')) {
-			if ( m.find(stoi(temp)) == m.end())
-				m.insert({ stoi(temp),1 });
-			else
-				m[stoi(temp)]++;
-			temp = "";
+	while (n != 0) {
+		if (n / 2 == 0)
+			n /= 2;
+		else {
+			ans++;
+			n--;
 		}
 	}
-	vector<pair<int, int>> vec(m.begin(), m.end());
 
-	sort(vec.begin(), vec.end(), [](pair<int, int> p1, pair<int, int> p2) ->bool {
-		return p1.second > p2.second;
-	});
+	return ans;
+}
+#pragma endregion
+/*
+	원리를 전혀 모르곘넹..
+*/
+#pragma region 12899 124 나라의 숫자
+string solution12899(int n) {
+	string answer = "";
 
-	for (auto a : vec)
-		answer.push_back(a.first);
+	while (n != 0) {
+		int temp = n % 3;
+		n /= 3;
 
+		if (temp == 0) {
+			answer = "4" + answer;
+			n--;
+		}
+		else
+			answer = to_string(temp) + answer;
+	}
+	
 	return answer;
 }
 #pragma endregion
-#pragma region 17677 [1차] 뉴스 클러스터링
-int solution17677(string str1, string str2) {
-	int answer = 0;
-	map<string, int> m1;
-	map<string, int> m2;
-	int sum = 0;
-	int n = 0;
-	for(int i =0; i<str1.size(); i++)
-		if (str1[i] >= 'A' && str1[i] <= 'Z')
-			str1[i] ^= 32;
-	for (int i = 0; i < str2.size(); i++)
-		if (str2[i] >= 'A' && str2[i] <= 'Z')
-			str2[i] ^= 32;
-
-	for (int i = 0; i < str1.size()-1; i++) {
-
-		if (str1[i] >= 'a' && str1[i] <= 'z' &&
-			str1[i + 1] >= 'a' && str1[i + 1] <= 'z') {
-			string temp = str1.substr(i, 2);
-			
-			if (m1.find(temp) == m1.end())
-				m1.insert({ temp,1 });
-			else
-				m1[temp]++;
-			sum++;
-		}
+/*
+	공식이 이해가 안감.
+*/
+#pragma region 62048 멀쩡한 사각형  
+long long gcd62048(int a, int b)
+{
+	long c;
+	while (b != 0)
+	{
+		c = a % b;
+		a = b;
+		b = c;
 	}
-	for (int i = 0; i < str2.size() - 1; i++) {
-		if (str2[i] >= 'a' && str2[i] <= 'z' &&
-			str2[i + 1] >= 'a' && str2[i + 1] <= 'z') {
-			string temp = str2.substr(i, 2);
+	return a;
+}
+long long solution62048(int w, int h) {
+	long long W = w;
+	long long H = h;
+	long long tmp = (w + h) - gcd62048(w, h);
 
-			if (m2.find(temp) == m2.end())
-				m2.insert({ temp,1 });
-			else
-				m2[temp]++;
-
-			sum++;
-		}
-	}
-
-	for (auto it = m1.begin(); it != m1.end(); it++) {
-		for (auto it2 = m2.begin(); it2 != m2.end(); it2++) {
-			if (it->first == it2->first) {
-				n += min(it->second, it2->second);
-			}
-		}
-	}
-	sum -= n;
-
-	if (sum == 0 || n == 0)
-		answer = 65536;
-	else
-		answer = int(((double)n / (double)sum) * 65536);
-
-
-	return answer;
+	return (W * H) - tmp;
 }
 #pragma endregion
 
