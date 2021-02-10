@@ -12,11 +12,6 @@
 #include <vector>
 using namespace std;
 
-void solution() {
-
-}
-
-
 #pragma region 1436. Destination City
 string destCity(vector<vector<string>> paths) {
 
@@ -42,7 +37,6 @@ string destCity(vector<vector<string>> paths) {
 }
 
 #pragma endregion
-
 #pragma region 1614. Maximum Nesting Depth of the Parentheses
 int maxDepth(string s) {
 	int answer = 0;
@@ -63,7 +57,6 @@ int maxDepth(string s) {
 }
 
 #pragma endregion
-
 #pragma region 1662. Check If Two String Arrays are Equivalent
 bool arrayStringsAreEqual(vector<string> word1, vector<string> word2) {
 	string str1;
@@ -78,4 +71,28 @@ bool arrayStringsAreEqual(vector<string> word1, vector<string> word2) {
 }
 
 #pragma endregion
+#pragma region 1672	Richest Customer Wealth
+int maximumWealth(vector<vector<int>>& accounts) {
+	int answer = 0;
+	for (auto arr : accounts) {
+		int sum = 0;
+		for (int a : arr)
+			sum += a;
 
+		answer = max(sum, answer);
+	}
+
+	return answer;
+}
+#pragma endregion
+
+
+#pragma region sample
+void func() {
+
+}
+#pragma endregion
+
+void solution() {
+
+}

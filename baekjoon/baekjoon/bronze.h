@@ -1,4 +1,5 @@
-﻿#include <stack>
+#pragma once
+#include <stack>
 #include <unordered_map>
 #include <sstream>
 #include <map>
@@ -12,17 +13,3 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-
-#pragma region 1238 파티
-void sol() {
-	
-}
-#pragma endregion
-
-int main()
-{
-	ios_base::sync_with_stdio(false);
-	cin.tie(0);
-	sol();
-}
-

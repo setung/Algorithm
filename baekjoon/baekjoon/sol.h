@@ -11,6 +11,7 @@
 #include <iostream>
 #include <vector>
 using namespace std;
+// 백준
 
 #pragma region 2557 Hello World
 void sol2557() {
@@ -1259,41 +1260,6 @@ void sol11650() {
 	}
 }
 #pragma endregion
-#pragma region 1463 1로 만들기
-void sol1463() {
-	int n;
-	cin >> n;
-	vector<int> dp(1000001, 0);
-
-	if (n < 4) {
-		if (n == 1)
-			cout << 0;
-		else
-			cout << n;
-	}
-
-	dp[2] = 1;
-	dp[3] = 1;
-
-
-	for (int i = 4; i < n + 1; i++) {
-		if (i % 2 == 0 && i % 3 == 0) {
-			dp[i] = min(dp[i - 1], min(dp[i / 2], dp[i / 3])) + 1;
-		}
-		else if (i % 2 == 0) {
-			dp[i] = min(dp[i - 1], dp[i / 2]) + 1;;
-		}
-		else if (i % 3 == 0) {
-			dp[i] = min(dp[i - 1], dp[i / 3]) + 1;
-		}
-		else {
-			dp[i] = dp[i - 1] + 1;
-		}
-	}
-
-	cout << dp[n];
-}
-#pragma endregion
 #pragma region 11726 2×n 타일링 1
 void sol11726() {
 	int n;
@@ -1320,26 +1286,6 @@ void sol11727() {
 		dp[i] = (dp[i - 2] * 2 + dp[i - 1]) % 10007;
 
 	cout << dp[n];
-}
-#pragma endregion
-#pragma region 9095 1, 2, 3 더하기
-void sol9095() {
-	int tc;
-	cin >> tc;
-
-	for (int t = 0; t < tc; t++) {
-		int n;
-		cin >> n;
-		vector<int> dp(12);
-		dp[1] = 1;
-		dp[2] = 2;
-		dp[3] = 4;
-
-		for (int i = 4; i <= n; i++)
-			dp[i] = dp[i - 1] + dp[i - 2] + dp[i - 3];
-
-		cout << dp[n] << '\n';
-	}
 }
 #pragma endregion
 #pragma region 2193 이친수 
@@ -1414,8 +1360,1872 @@ void sol1918() {
 	cout << answer;
 }
 #pragma endregion
+#pragma region 1535 안녕    
+void sol1535() {
+	int n;
+	cin >> n;
+	vector<pair<int, int>> arr(n);
+	vector<int> answer(101);
+
+	for (int i = 0; i < n; i++) cin >> arr[i].first;
+	for (int i = 0; i < n; i++) cin >> arr[i].second;
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 100; j > 0; j--) {
+			if (j - arr[i].first > 0) {
+				answer[j] = max(answer[j - arr[i].first] + arr[i].second, answer[j]);
+			}
+		}
+	}
+
+	cout << answer[100];
+
+}
+#pragma endregion
+#pragma region 12865 평범한 배낭    
+void sol12865() {
+	int n, m;
+	cin >> n >> m;
+	vector<int> answer(m + 1);
+
+	for (int i = 0; i < n; i++) {
+		int a, b;
+		cin >> a >> b;
+
+		for (int j = m; j >= a; j--) {
+			answer[j] = max(answer[j], b + answer[j - a]);
+		}
+	}
+
+	cout << answer[m];
+}
+#pragma endregion
+#pragma region 7562 나이트의 이동   
+void sol7562() {
+	int tc;
+	cin >> tc;
+	int dx[] = { 1,1,2,2,-1,-1,-2,-2 };
+	int dy[] = { 2,-2,1,-1,2,-2,1,-1 };
+
+	for (int t = 0; t < tc; t++) {
+		int n;
+		cin >> n;
+		int answer = 99999;
+		queue<pair<pair<int, int>, int>> q;
+		vector<vector<bool>> board(n, vector<bool>(n, false));
+		pair<int, int> start;
+		pair<int, int> end;
+
+		int a, b, c, d;
+		cin >> a >> b >> c >> d;
+		start = { a,b };
+		end = { c,d };
+
+		board[a][b] = true;
+		q.push({ start,0 });
+
+		while (!q.empty())
+		{
+			pair<int, int> now = q.front().first;
+			int cnt = q.front().second;
+			q.pop();
+
+			//	cout << now.first << ' ' << now.second << '\n';
+
+			if (now.first == end.first && now.second == end.second) {
+				if (answer > cnt)
+					answer = cnt;
+			}
+
+			for (int i = 0; i < 8; i++) {
+				int nx = dx[i] + now.first;
+				int ny = dy[i] + now.second;
+
+				if (nx > -1 && ny > -1 && nx < n && ny < n && board[nx][ny] == false) {
+					board[nx][ny] = true;
+					q.push({ { nx,ny }, cnt + 1 });
+				}
+			}
+		}
+		cout << answer << '\n';
+	}
+}
+#pragma endregion
+#pragma region 2468 안전 영역  
+void sol2468() {
+	int n;
+	cin >> n;
+	vector<vector<int>> _map(n, vector<int>(n));
+	int answer = 0;
+	int M = 0;
+	int dx[] = { 0,0,1,-1 };
+	int dy[] = { 1,-1,0,0 };
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++) {
+			cin >> _map[i][j];
+			if (M < _map[i][j]) M = _map[i][j];
+		}
+
+	for (int k = 0; k <= M; k++) {
+		int cnt = 0;
+		vector<vector<bool>> visit(n, vector<bool>(n, false));
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (_map[i][j] > k && visit[i][j] == false) {
+					cnt++;
+					visit[i][j] = true;
+					queue<pair<int, int>> q;
+					q.push({ i,j });
+
+					while (!q.empty()) {
+						int x = q.front().first;
+						int y = q.front().second;
+						q.pop();
+
+						for (int i = 0; i < 4; i++) {
+							int nx = x + dx[i];
+							int ny = y + dy[i];
+
+							if (nx > -1 && ny > -1 && nx < n && ny < n && visit[nx][ny] == false && _map[nx][ny] > k) {
+								visit[nx][ny] = true;
+								q.push({ nx,ny });
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if (answer < cnt)
+			answer = cnt;
+	}
+
+	cout << answer;
+}
+#pragma endregion
+#pragma region 7569 토마토  
+class Pos7569 {
+public:
+	int h = 0;
+	int x = 0;
+	int y = 0;
+
+	Pos7569() {}
+	Pos7569(int _h, int _x, int _y) : x(_x), y(_y), h(_h) {}
+};
+void sol7569() {
+	int m, n, h;
+	cin >> m >> n >> h;
+	int answer = 0;
+	vector<vector<vector<int>>> tomato(h, vector<vector<int>>(n, vector<int>(m)));
+	queue<pair<Pos7569, int>> q;
+	for (int i = 0; i < h; i++)
+		for (int j = 0; j < n; j++)
+			for (int k = 0; k < m; k++) {
+				cin >> tomato[i][j][k];
+				if (tomato[i][j][k] == 1) {
+					q.push({ Pos7569(i,j,k) ,0 });
+				}
+			}
+
+	int dx[] = { 0,0,1,-1,0,0 };
+	int dy[] = { 1,-1,0,0,0,0 };
+	int dh[] = { 0,0,0,0,1,-1 };
 
 
+	while (!q.empty()) {
+		Pos7569 pos = q.front().first;
+		int cnt = q.front().second;
+		q.pop();
+
+		if (answer < cnt)
+			answer = cnt;
+
+		for (int i = 0; i < 6; i++) {
+			int nx = pos.x + dx[i];
+			int ny = pos.y + dy[i];
+			int nh = pos.h + dh[i];
+
+			if (nx > -1 && ny > -1 && nh > -1 && nx < n && ny < m && nh < h &&
+				tomato[nh][nx][ny] == 0) {
+				tomato[nh][nx][ny] = 1;
+				q.push({ Pos7569(nh,nx,ny),cnt + 1 });
+			}
+		}
+	}
+
+	for (int i = 0; i < h; i++)
+		for (int j = 0; j < n; j++)
+			for (int k = 0; k < m; k++)
+				if (tomato[i][j][k] == 0) {
+					cout << -1;
+					return;
+				}
+
+	cout << answer;
+}
+#pragma endregion
+#pragma region 10026 적록색약   
+int bfs10026(int n, vector<vector<char>>& _map) {
+	vector<vector<bool>> visit(n, vector<bool>(n, false));
+	queue<pair<int, int>> q;
+	int cnt = 0;
+	int dx[] = { 0,0,1,-1 };
+	int dy[] = { 1,-1,0,0 };
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (visit[i][j] == false) {
+				visit[i][j] = true;
+				q.push({ i,j });
+				cnt++;
+
+				while (!q.empty()) {
+					int x = q.front().first;
+					int y = q.front().second;
+					q.pop();
+
+					for (int i = 0; i < 4; i++) {
+						int nx = x + dx[i];
+						int ny = y + dy[i];
+
+						if (nx > -1 && ny > -1 && nx < n && ny < n && visit[nx][ny] == false && _map[nx][ny] == _map[x][y]) {
+							visit[nx][ny] = true;
+							q.push({ nx,ny });
+						}
+					}
+				}
+			}
+		}
+	}
+	return cnt;
+}
+
+void sol10026() {
+	int n;
+	cin >> n;
+	vector<vector<char>> _map(n, vector<char>(n));
+	vector<vector<char>> _map2(n, vector<char>(n));
+
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++) {
+			char c;
+			cin >> c;
+			_map[i][j] = c;
+
+			if (c == 'R')
+				c = 'G';
+			_map2[i][j] = c;
+		}
+
+	cout << bfs10026(n, _map) << ' ' << bfs10026(n, _map2);
+
+}
+#pragma endregion
+#pragma region 5014 스타트링크    
+void sol5014() {
+	int n, start, end, u, d;
+	cin >> n >> start >> end >> u >> d;
+	queue<pair<int, int>> q;
+	vector<bool> visit(n + 1, false);
+	visit[start] = true;
+	q.push({ start,0 });
+
+	while (!q.empty()) {
+		int now = q.front().first;
+		int cnt = q.front().second;
+		q.pop();
+
+		if (now == end) {
+			cout << cnt;
+			return;
+		}
+
+		if (now + u <= n && now + u > 0 && visit[now + u] == false) {
+			visit[now + u] = true;
+			q.push({ now + u,cnt + 1 });
+		}
+		if (now - d <= n && now - d > 0 && visit[now - d] == false) {
+			visit[now - d] = true;
+			q.push({ now - d, cnt + 1 });
+		}
+	}
+
+	cout << "use the stairs";
+
+}
+#pragma endregion
+#pragma region 2573 빙산     
+int check2573(int n, int m, vector<vector<int>>& _map) {
+	queue<pair<int, int>> q;
+	vector<vector<bool>> visit(n, vector<bool>(m, false));
+	int dx[] = { 0,0,-1,1 };
+	int dy[] = { -1,1,0,0 };
+	int cnt = 0;
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			if (_map[i][j] != 0 && !visit[i][j]) {
+				q.push({ i,j });
+				visit[i][j] = true;
+				cnt++;
+
+				while (!q.empty()) {
+					int x = q.front().first;
+					int y = q.front().second;
+					q.pop();
+
+					for (int k = 0; k < 4; k++) {
+						int nx = dx[k] + x;
+						int ny = dy[k] + y;
+
+						if (nx <n && ny <m && nx>-1 && ny >-1 && !visit[nx][ny] &&
+							_map[nx][ny] != 0) {
+							visit[nx][ny] = true;
+							q.push({ nx,ny });
+						}
+					}
+				}
+
+			}
+		}
+	}
+	return cnt;
+}
+
+void sol2573() {
+	int n, m;
+	cin >> n >> m;
+	int answer = 0;
+	vector<vector<int>> _map(n, vector<int>(m));
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < m; j++)
+			cin >> _map[i][j];
+
+	while (true) {
+		int cnt = check2573(n, m, _map);
+		vector<vector<int>> melt(n, vector<int>(m));
+
+		if (cnt == 0) {
+			cout << 0;
+			break;
+		}
+		else if (cnt > 1) {
+			cout << answer;
+			break;
+		}
+		answer++;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				if (_map[i][j] != 0) {
+					int dx[] = { 0,0,-1,1 };
+					int dy[] = { -1,1,0,0 };
+
+					for (int k = 0; k < 4; k++) {
+						int nx = dx[k] + i;
+						int ny = dy[k] + j;
+
+						if (nx > -1 && ny > -1 && nx < n && ny < m && _map[nx][ny] == 0 && _map[i][j] != 0)
+							melt[i][j]--;
+					}
+				}
+			}
+		}
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				_map[i][j] = _map[i][j] + melt[i][j] >= 0 ? _map[i][j] + melt[i][j] : 0;
+			}
+		}
+	}
+}
+#pragma endregion
+#pragma region 2805 나무 자르기     
+void sol2805() {
+	int n, m;
+	cin >> n >> m;
+	vector<int> arr(n);
+	long long answer = 0;
+	for (int i = 0; i < n; i++)
+		cin >> arr[i];
+
+	long long lt = 0;
+	long long rt = *max_element(arr.begin(), arr.end());
+
+	while (lt <= rt) {
+		int mid = (lt + rt) / 2;
+		long long v = 0;
+
+		for (int i = 0; i < n; i++) {
+			v += arr[i] - mid >= 0 ? arr[i] - mid : 0;
+		}
+
+		if (v >= m) {
+			lt = mid + 1;
+
+			if (answer < mid)
+				answer = mid;
+		}
+		else {
+			rt = mid - 1;
+		}
+
+	}
+
+	cout << answer;
+}
+#pragma endregion
+#pragma region 1978 소수 찾기    
+void sol1978() {
+	int n;
+	cin >> n;
+	vector<bool> sosu(1001, true);
+	int answer = 0;
+
+	sosu[1] = false;
+	for (int i = 2; i < 1001; i++) {
+		if (sosu[i])
+			for (int j = i * 2; j < 1001; j += i)
+				sosu[j] = false;
+	}
+
+	for (int i = 0; i < n; i++) {
+		int a;
+		cin >> a;
+
+		if (sosu[a])
+			answer++;
+	}
+
+	cout << answer;
+}
+#pragma endregion
+#pragma region 2231 분해합      
+void sol2231() {
+	int n;
+	cin >> n;
+
+	for (int i = 0; i < 1000001; i++) {
+		int sum = i;
+		int temp = i;
+
+		while (temp != 0) {
+			sum += temp % 10;
+			temp /= 10;
+		}
+
+		if (sum == n) {
+			cout << i;
+			return;
+		}
+	}
+
+	cout << 0;
+}
+#pragma endregion
+#pragma region 7568 덩치       
+void sol7568() {
+	int n;
+	cin >> n;
+	vector<int> rank(n, 1);
+	vector<pair<int, int>> p(n);
+	for (int i = 0; i < n; i++) {
+		cin >> p[i].first;
+		cin >> p[i].second;
+	}
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (p[i].first < p[j].first && p[i].second < p[j].second)
+				rank[i]++;
+		}
+	}
+
+	for (auto r : rank)
+		cout << r << ' ';
+
+}
+#pragma endregion
+#pragma region 1018 체스판 다시 칠하기       
+void sol1018() {
+	int n, m;
+	cin >> n >> m;
+	int mini = 999999999;
+	vector<vector<char>> board(n, vector<char>(m));
+
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < m; j++)
+			cin >> board[i][j];
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			if (8 + i <= n && 8 + j <= m) {
+
+				for (int t = 0; t < 2; t++) {
+					char first = t == 0 ? 'W' : 'B';
+					int cnt = 0;
+
+					for (int k = i; k < 8 + i; k++) {
+						first = first == 'W' ? 'B' : 'W';
+						for (int l = j; l < 8 + j; l++) {
+							if (board[k][l] != first)
+								cnt++;
+							first = first == 'W' ? 'B' : 'W';
+						}
+					}
+					if (mini > cnt)
+						mini = cnt;
+				}
+			}
+		}
+	}
+
+	cout << mini;
+}
+#pragma endregion
+#pragma region 1065 한수    
+void sol1065() {
+	int n;
+	cin >> n;
+	int answer = 0;
+
+	for (int i = 1; i <= n; i++) {
+		if (i < 10)
+			answer++;
+		else {
+			int num = i;
+			vector<int> arr;
+			while (num != 0) {
+				arr.push_back(num % 10);
+				num /= 10;
+			}
+			int gap = arr[0] - arr[1];
+			bool isHansu = true;
+			for (int j = 0; j < arr.size() - 1; j++) {
+				if (arr[j] - arr[j + 1] != gap) {
+					isHansu = false;
+					break;
+				}
+			}
+
+			if (isHansu)
+				answer++;
+		}
+	}
+	cout << answer;
+}
+#pragma endregion
+#pragma region 2309 일곱 난쟁이    
+void func2309(int i, vector<int>& arr, vector<int>& visit, int sum, bool& isEnd) {
+
+	if (isEnd) return;
+
+	if (sum == 100 && visit.size() == 7) {
+		sort(visit.begin(), visit.end());
+		for (int v : visit)
+			cout << v << '\n';
+		isEnd = true;
+	}
+	else if (i >= 9 || visit.size() > 7) return;
+	else {
+		visit.push_back(arr[i]);
+		func2309(i + 1, arr, visit, sum + arr[i], isEnd);
+		visit.pop_back();
+		func2309(i + 1, arr, visit, sum, isEnd);
+	}
+}
+void sol2309() {
+	vector<int> arr(9);
+	vector<int> visit;
+	bool isEnd = false;
+	for (int i = 0; i < 9; i++)
+		cin >> arr[i];
+	func2309(0, arr, visit, 0, isEnd);
+}
+#pragma endregion
+#pragma region 14501 퇴사
+void func14501(vector<pair<int, int>>& arr, int n, int d, int sum, int& _max) {
+	if (d >= n) {
+		if (sum > _max)
+			_max = sum;
+	}
+	else {
+		if (d + arr[d].first <= n)
+			func14501(arr, n, arr[d].first + d, sum + arr[d].second, _max);
+		func14501(arr, n, 1 + d, sum, _max);
+	}
+}
+
+void sol14501() {
+	int n;
+	cin >> n;
+	int _max = 0;
+	vector<pair<int, int>> arr(n);
+
+	for (int i = 0; i < n; i++) {
+		cin >> arr[i].first;
+		cin >> arr[i].second;
+	}
+
+	func14501(arr, n, 0, 0, _max);
+
+	cout << _max;
+}
+#pragma endregion
+#pragma region 14501 퇴사 더 간단.
+void sol14501_2() {
+	int n;	cin >> n;
+	vector<int> arr(n + 1);
+
+	for (int i = 0; i < n; i++) {
+		int date, value;
+		cin >> date >> value;
+
+		if (date + i <= n)
+			arr[i + date] = max(arr[i + date], arr[i] + value);
+		arr[i + 1] = max(arr[i], arr[i + 1]);
+	}
+	cout << arr[n];
+}
+#pragma endregion
+#pragma region 14502 연구소
+vector<vector<int>> spreadVirus14502(int n, int m, vector<vector<int>> _map) {
+	int dx[] = { 0,0,-1,1 };
+	int dy[] = { -1,1,0,0 };
+	vector<vector<bool>> visit(n, vector<bool>(m, false));
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			if (_map[i][j] == 2 && !visit[i][j]) {
+				queue<pair<int, int>> q;
+				q.push({ i,j });
+				visit[i][j] = true;
+
+				while (!q.empty()) {
+					int x = q.front().first;
+					int y = q.front().second;
+					q.pop();
+
+					for (int i = 0; i < 4; i++) {
+						int nx = dx[i] + x;
+						int ny = dy[i] + y;
+
+						if (nx > -1 && ny > -1 && nx < n && ny < m &&
+							_map[nx][ny] == 0 && !visit[nx][ny]) {
+							_map[nx][ny] = 2;
+							visit[nx][ny] = true;
+							q.push({ nx,ny });
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return _map;
+}
+int countSafeArea14502(int n, int m, vector<vector<int>> _map) {
+	int cnt = 0;
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < m; j++)
+			if (_map[i][j] == 0)
+				cnt++;
+
+	return cnt;
+}
+void func14502(int n, int m, vector<vector<int>> _map, int wall, int& answer) {
+	if (wall == 3) {
+		int area = countSafeArea14502(n, m, spreadVirus14502(n, m, _map));
+		if (area > answer)
+			answer = area;
+	}
+	else {
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				if (_map[i][j] == 0) {
+					_map[i][j] = 1;
+					func14502(n, m, _map, wall + 1, answer);
+					_map[i][j] = 0;
+				}
+			}
+		}
+
+	}
+}
+void sol14502() {
+	int n, m;
+	cin >> n >> m;
+	int answer = 0;
+	vector<vector<int>> _map(n, vector<int>(m));
+
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < m; j++)
+			cin >> _map[i][j];
+
+	func14502(n, m, _map, 0, answer);
+	cout << answer;
+}
+#pragma endregion
+#pragma region 14888 연산자 끼워넣기
+void func14888(int l, int n, vector<int>& nums, vector<int>& op, int& _max, int& _min, long long sum) {
+	if (l == n) {
+		if (sum > _max) _max = sum;
+		if (sum < _min) _min = sum;
+	}
+	else {
+		for (int i = 0; i < 4; i++) {
+			if (op[i] > 0) {
+				op[i]--;
+				if (i == 0) func14888(l + 1, n, nums, op, _max, _min, sum + nums[l]);
+				else if (i == 1) func14888(l + 1, n, nums, op, _max, _min, sum - nums[l]);
+				else if (i == 2) func14888(l + 1, n, nums, op, _max, _min, sum * nums[l]);
+				else if (i == 3) func14888(l + 1, n, nums, op, _max, _min, sum / nums[l]);
+				op[i]++;
+			}
+		}
+	}
+}
+
+void sol14888() {
+	int n;
+	cin >> n;
+	int _max = -2000000000;
+	int _min = 2000000000;
+	vector<int> nums(n);
+	vector<int> op(4);
+	for (int i = 0; i < n; i++)
+		cin >> nums[i];
+	for (int i = 0; i < 4; i++)
+		cin >> op[i];
+
+	func14888(1, n, nums, op, _max, _min, nums[0]);
+
+	cout << _max << '\n' << _min;
+}
+#pragma endregion
+#pragma region 14889 스타트와 링크
+void func14889(int n, vector<vector<int>>& arr, vector<bool>& visit, int l, int cnt, int& answer) {
+	if (l == n) {
+		if (cnt == n / 2) {
+			int start = 0;
+			int link = 0;
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
+					if (visit[i] == visit[j]) {
+						if (visit[i])
+							start += (arr[i][j]);
+						else
+							link += (arr[i][j]);
+					}
+				}
+			}
+
+			int gap = abs(start - link);
+			if (answer > gap)
+				answer = gap;
+		}
+
+	}
+	else {
+		visit[l] = true;
+		func14889(n, arr, visit, l + 1, cnt + 1, answer);
+		visit[l] = false;
+		func14889(n, arr, visit, l + 1, cnt, answer);
+
+	}
+}
+void sol14889() {
+	int n;
+	cin >> n;
+	int answer = 2000000000;
+	vector<vector<int>> arr(n, vector<int>(n));
+	vector<bool> visit(n, false);
+
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++)
+			cin >> arr[i][j];
+
+	func14889(n, arr, visit, 0, 0, answer);
+
+	cout << answer;
+}
+#pragma endregion
+#pragma region 1182 부분수열의 합
+void func1182(int n, int m, int l, vector<int>& arr, int sum, int& answer) {
+	if (n == l) {
+		if (sum == m)
+			answer++;
+	}
+	else {
+		func1182(n, m, l + 1, arr, sum + arr[l], answer);
+		func1182(n, m, l + 1, arr, sum, answer);
+	}
+}
+
+void sol1182() {
+	int n, m;
+	cin >> n >> m;
+	vector<int> arr(n);
+	int answer = 0;
+	for (int i = 0; i < n; i++)
+		cin >> arr[i];
+
+	func1182(n, m, 0, arr, 0, answer);
+
+	if (m == 0) answer = -1;
+	cout << answer;
+}
+#pragma endregion
+#pragma region 1759 암호 만들기
+void func1759(int l, int c, int d, vector<char>& v, string str) {
+	if (str.size() == l) {
+		int m = 0, j = 0;
+		for (char s : str) {
+			if (s == 'a' || s == 'e' || s == 'i' || s == 'o' || s == 'u')
+				m++;
+			else
+				j++;
+		}
+
+		if (m > 0 && j > 1)
+			cout << str << '\n';
+	}
+	else {
+		if (d == c) return;
+		func1759(l, c, d + 1, v, str + v[d]);
+		func1759(l, c, d + 1, v, str);
+	}
+}
+
+void sol1759() {
+	int l, c;
+	cin >> l >> c;
+	vector<char> v(c);
+	for (int i = 0; i < c; i++)
+		cin >> v[i];
+
+	sort(v.begin(), v.end());
+	func1759(l, c, 0, v, "");
+
+}
+#pragma endregion
+#pragma region 10819 차이를 최대로
+void sol10819() {
+	int n;
+	cin >> n;
+	vector<int> arr(n);
+	for (int i = 0; i < n; i++)
+		cin >> arr[i];
+	int answer = -99999999;
+	sort(arr.begin(), arr.end());
+	do {
+		int sum = 0;
+		for (int i = 0; i < n - 1; i++) 
+			sum += abs(arr[i] - arr[i + 1]);
+
+		if (sum > answer)
+			answer = sum;
+	} while (next_permutation(arr.begin(), arr.end()));
+
+	cout << answer;
+}
+#pragma endregion
+#pragma region 10974 모든 순열
+void sol10974() {
+	int n;
+	cin >> n;
+	vector<int> arr(n);
+	for (int i = 0; i < n; i++)
+		arr[i] = i + 1;
+
+	do {
+		for (int i = 0; i < n; i++)
+			cout << arr[i] << ' ';
+		cout << '\n';
+
+	} while (next_permutation(arr.begin(), arr.end()));
+
+}
+#pragma endregion
+#pragma region 10430 나머지
+void sol10430() {
+	int A, B, C;
+	cin >> A >> B >> C;
+
+	cout << (A + B) % C << '\n';
+	cout << ((A % C) + (B % C)) % C << '\n';
+	cout << (A * B) % C << '\n';
+	cout << ((A % C) * (B % C)) % C << '\n';
+}
+#pragma endregion
+#pragma region 1037 약수
+void sol1037() {
+	int n;
+	cin >> n;
+	vector<int> arr(n);
+
+	for (int i = 0; i < n; i++)
+		cin >> arr[i];
+
+	sort(arr.begin(), arr.end());
+
+	cout << arr.front() * arr.back();
+}
+#pragma endregion
+#pragma region 2609 최대공약수와 최소공배수
+void sol2609() {
+	int a, b;
+	cin >> a >> b;
+
+	if (a < b) {
+		int temp = a;
+		a = b;
+		b = temp;
+	}
+
+	int M, m;
+
+	for (int i = 1; i <= a; i++) {
+		if (a % i == 0 && b % i == 0)
+			m = i;
+	}
+
+	M = m * a / m * b / m;
+	cout << m << '\n' << M;
+}
+#pragma endregion
+#pragma region 6588 골드바흐의 추측
+void sol6588() {
+	vector<bool> arr(1000001, true);
+	arr[1] = false;
+
+	for (int i = 2; i < 1000001; i++) {
+		if (arr[i]) {
+			for (int j = i * 2; j < 1000001; j += i) {
+				arr[j] = false;
+			}
+		}
+	}
+	for (int i = 2; i < 1000001; i++) {
+		if (i % 2 == 0)
+			arr[i] = false;
+	}
+
+	while (true) {
+		int n;
+		cin >> n;
+		if (n == 0) break;
+
+		bool isFind = false;
+		for (int i = 3; i < 1000001; i++) {
+			if (n - i > -1 && arr[i] && arr[n - i]) {
+				cout << n << " = " << i << " + " << n - i << '\n';
+				isFind = true;
+				break;
+			}
+		}
+
+		if (!isFind)
+			cout << "Goldbach's conjecture is wrong.\n";
+
+	}
+
+}
+#pragma endregion
+#pragma region 1476 날짜 계산
+void sol1476() {
+	int e, s, m;
+	cin >> e >> s >> m;
+	int ee = 0, ss = 0, mm = 0;
+	int year = 0;
+
+	while (!(ee == e && ss == s && mm == m)) {
+		ee = (ee + 1) % 16 == 0 ? 1 : (ee + 1) % 16;
+		ss = (ss + 1) % 29 == 0 ? 1 : (ss + 1) % 29;
+		mm = (mm + 1) % 20 == 0 ? 1 : (mm + 1) % 20;
+		year++;
+	}
+
+	cout << year;
+}
+#pragma endregion
+#pragma region 1748 수 이어 쓰기 1
+void sol1748() {
+	int n;
+	cin >> n;
+	long long answer = 0;
+
+	int idx = 1;
+	int nine = 9;
+
+	while (1) {
+		if (nine <= n) {
+			n -= nine;
+			answer += nine * idx;
+
+			nine *= 10;
+			idx++;
+		}
+		else {
+			answer += (idx * n);
+			break;
+		}
+	}
+	cout << answer;
+}
+#pragma endregion
+#pragma region 3273 두 수의 합
+void sol3273() {
+	int n;
+	cin >> n;
+	vector<bool> arr(2000001, false);
+	int answer = 0;
+	for (int i = 0; i < n; i++) {
+		int a;
+		cin >> a;
+		arr[a] = true;
+	}
+	int x;
+	cin >> x;
+
+	for (int i = 1; x - i >= 0; i++) {
+		if (i != x - i && arr[i] && arr[x - i])
+			answer++;
+	}
+
+	cout << answer / 2;
+}
+#pragma endregion
+#pragma region 1158 요세푸스 문제
+void sol1158() {
+	int n, k;
+	cin >> n >> k;
+	queue<int> q;
+	vector<int> answer;
+
+	for (int i = 1; i <= n; i++)
+		q.push(i);
+
+	int index = 0;
+	while (!q.empty()) {
+		index = (index + 1) % k;
+
+		if (index == 0) answer.push_back(q.front());
+		else q.push(q.front());
+
+		q.pop();
+	}
+
+	cout << '<';
+	for (int i = 0; i < answer.size() - 1; i++)
+		cout << answer[i] << ", ";
+
+	cout << answer.back() << ">";
+}
+#pragma endregion
+#pragma region 5397 키로거
+void sol5397() {
+	int tc;
+	cin >> tc;
+
+	for (int t = 0; t < tc; t++) {
+		string str;
+		cin >> str;
+		list<char> l;
+
+		auto it = l.begin();
+
+		for (int i = 0; i < str.size(); i++) {
+			if (str[i] == '<') {
+				if (!l.empty() && it != l.begin())
+					it--;
+			}
+			else if (str[i] == '>') {
+				if (!l.empty() && it != l.end())
+					it++;
+			}
+			else if (str[i] == '-') {
+				if (!l.empty() && it != l.begin())
+					it = l.erase(--it);
+			}
+			else {
+				it = l.insert(it, str[i]);
+				it++;
+			}
+		}
+
+		for (auto c : l)
+			cout << c;
+		cout << '\n';
+
+		/*string newStr="";
+		auto it = newStr.begin();
+		for (int i = 0; i < str.size(); i++) {
+			if (str[i] == '<') {
+				if (!newStr.empty() && it != newStr.begin() )
+					it--;
+			}
+			else if (str[i] == '>') {
+				if (!newStr.empty() && it != newStr.end())
+					it++;
+			}
+			else if (str[i] == '-') {
+				if(!newStr.empty() && it != newStr.begin())
+					it = newStr.erase(--it);
+			}
+			else {
+				it = newStr.insert(it, str[i]);
+				it++;
+			}
+		}
+
+		cout << newStr <<'\n';*/
+	}
+}
+#pragma endregion
+#pragma region 10845 큐 
+void sol10845() {
+	int n;
+	cin >> n;
+	list<int> q;
+
+	for (int i = 0; i < n; i++) {
+		string op;
+		cin >> op;
+
+		if (op == "push") {
+			int x;
+			cin >> x;
+			q.push_back(x);
+		}
+		else if (op == "pop") {
+			if (q.empty())
+				cout << -1 << '\n';
+			else {
+				cout << q.front() << '\n';
+				q.pop_front();
+			}
+		}
+		else if (op == "size") {
+			cout << q.size() << '\n';
+		}
+		else if (op == "empty") {
+			cout << q.empty() << '\n';
+		}
+		else if (op == "front") {
+			cout << ((q.empty()) ? -1 : q.front()) << '\n';
+		}
+		else if (op == "back") {
+			cout << ((q.empty()) ? -1 : q.back()) << '\n';
+		}
+	}
+}
+#pragma endregion
+#pragma region 2164 카드2 
+void sol2164() {
+	int n;
+	cin >> n;
+	queue<int> q;
+
+	for (int i = 1; i <= n; i++)
+		q.push(i);
+
+	while (q.size() != 1) {
+		q.pop();
+		q.push(q.front());
+		q.pop();
+	}
+
+	cout << q.front();
+}
+#pragma endregion
+#pragma region 6198 옥상 정원 꾸미기 
+void sol6198() {
+	stack<long long> s;
+	long long answer = 0;
+	int n;
+	cin >> n;
+
+	for (int i = 0; i < n; i++) {
+		long long x;
+		cin >> x;
+
+		while (!s.empty() && s.top() <= x)
+			s.pop();
+
+		answer += s.size();
+		s.push(x);
+
+	}
+
+	cout << answer;
+}
+#pragma endregion
+#pragma region 2493 탑  
+void sol2493() {
+	stack<pair<int, int>> s;
+	int n;
+	cin >> n;
+	vector<pair<int, int>> arr(n);
+	vector<int> answer(n);
+
+	for (int i = 0; i < n; i++) {
+		int a;
+		cin >> a;
+		arr[i] = { a,i + 1 };
+	}
+
+	for (int i = 0; i < n; i++) {
+
+		while (!s.empty() && s.top().first <= arr[i].first) {
+			s.pop();
+		}
+
+		if (!s.empty() && s.top().first > arr[i].first)
+			answer[i] = s.top().second;
+
+		s.push(arr[i]);
+	}
+
+	for (int a : answer)
+		cout << a << ' ';
+
+}
+#pragma endregion
+#pragma region 10866 덱  
+void sol10866() {
+	int n;
+	cin >> n;
+	list<int> l;
+
+	for (int i = 0; i < n; i++) {
+		string op;
+		cin >> op;
+
+		if (op == "push_front") {
+			int x;
+			cin >> x;
+			l.push_front(x);
+		}
+		else if (op == "push_back") {
+			int x;
+			cin >> x;
+			l.push_back(x);
+		}
+		else if (op == "pop_front") {
+			if (l.empty())
+				cout << -1 << '\n';
+			else {
+				cout << l.front() << '\n';
+				l.pop_front();
+			}
+		}
+		else if (op == "pop_back") {
+			if (l.empty())
+				cout << -1 << '\n';
+			else {
+				cout << l.back() << '\n';
+				l.pop_back();
+			}
+		}
+		else if (op == "size") {
+			cout << l.size() << '\n';
+		}
+		else if (op == "empty") {
+			cout << l.empty() << '\n';
+		}
+		else if (op == "front") {
+			cout << (l.empty() ? -1 : l.front()) << '\n';
+		}
+		else if (op == "back") {
+			cout << (l.empty() ? -1 : l.back()) << '\n';
+		}
+	}
+}
+#pragma endregion
+#pragma region 5430 AC  
+void sol5430() {
+	int tc;
+	cin >> tc;
+
+	for (int t = 0; t < tc; t++) {
+		string op;
+		string numStr;
+		int n;
+		cin >> op >> n >> numStr;
+		list<int> num;
+		bool isRevere = false;
+		bool isError = false;
+
+		string temp;
+		for (int i = 0; i < numStr.size(); i++) {
+			if (numStr[i] != '[' && numStr[i] != ']' && numStr[i] != ',') {
+				temp += numStr[i];
+			}
+			else if (numStr[i] == ',') {
+				num.push_back(stoi(temp));
+				temp = "";
+			}
+		}
+
+		if (!temp.empty())
+			num.push_back(stoi(temp));
+
+		for (int i = 0; i < op.size(); i++) {
+			if (op[i] == 'D') {
+				if (num.empty()) {
+					cout << "error\n";
+					isError = true;
+					break;
+				}
+				else {
+					if (!isRevere)
+						num.pop_front();
+					else
+						num.pop_back();
+				}
+			}
+			else {
+				isRevere = !isRevere;
+			}
+		}
+
+		if (!isError) {
+			cout << '[';
+			int size = num.size();
+			if (!isRevere) {
+				for (auto it = num.begin(); it != num.end(); it++) {
+					cout << *it;
+					if (size-- != 1)
+						cout << ',';
+				}
+
+			}
+			else {
+				for (auto it = num.rbegin(); it != num.rend(); it++) {
+					cout << *it;
+					if (size-- != 1)
+						cout << ',';
+				}
+			}
+			cout << "]\n";
+		}
+	}
+}
+#pragma endregion
+#pragma region 1920 수 찾기  
+void sol1920() {
+	int n;
+	cin >> n;
+	vector<int> arr(n);
+
+	for (int i = 0; i < n; i++)
+		cin >> arr[i];
+
+	sort(arr.begin(), arr.end());
+
+	int m;
+	cin >> m;
+
+	for (int i = 0; i < m; i++) {
+		int x;
+		cin >> x;
+
+		int lt = 0;
+		int rt = n - 1;
+		bool isExist = false;
+		while (lt <= rt) {
+			int mid = (lt + rt) / 2;
+
+			if (arr[mid] == x) {
+				isExist = true;
+				break;
+			}
+			else if (arr[mid] > x) {
+				rt = mid - 1;
+			}
+			else {
+				lt = mid + 1;
+			}
+		}
+
+		if (isExist)
+			cout << "1\n";
+		else
+			cout << "0\n";
+	}
+}
+#pragma endregion
+#pragma region 10816 숫자 카드 2  
+void sol10816() {
+	int n;
+	cin >> n;
+	vector<int> arr(20000001);
+
+	for (int i = 0; i < n; i++) {
+		int x;
+		cin >> x;
+		if (x < 0) {
+			x = abs(x) + 10000000;
+		}
+		arr[x]++;
+	}
+
+	int m;
+	cin >> m;
+	for (int i = 0; i < m; i++) {
+		int x;
+		cin >> x;
+		if (x < 0) {
+			x = abs(x) + 10000000;
+		}
+		cout << arr[x] << ' ';
+	}
+}
+#pragma endregion
+#pragma region 2003 수들의 합 2 
+void sol2003() {
+	int n, m;
+	cin >> n >> m;
+	vector<int> arr(n);
+	int answer = 0;
+	for (int i = 0; i < n; i++)
+		cin >> arr[i];
+
+	for (int i = 0; i < n; i++) {
+		int sum = arr[i];
+
+		if (sum == m) {
+			answer++;
+			continue;
+		}
+
+		if (sum > m)
+			continue;
+
+		for (int j = i + 1; j < n; j++) {
+			sum += arr[j];
+
+			if (sum == m) {
+				answer++;
+				break;
+			}
+			if (sum > m)
+				break;
+		}
+	}
+	cout << answer;
+}
+#pragma endregion
+#pragma region 1197 최소 스패닝 트리
+int findParent1197(int a, vector<int>& nodeUnion) {
+	if (nodeUnion[a] == a) return a;
+	else return nodeUnion[a] = findParent1197(nodeUnion[a], nodeUnion);
+}
+
+void unionNodes1197(int a, int b, vector<int>& nodeUnion) {
+	a = findParent1197(a, nodeUnion);
+	b = findParent1197(b, nodeUnion);
+
+	if (a > b)
+		nodeUnion[a] = b;
+	else
+		nodeUnion[b] = a;
+}
+void sol1197() {
+	int v, e;
+	cin >> v >> e;
+	vector<int> nodeUnion(v + 1);
+	priority_queue<pair<int, pair<int, int>>> q;
+	int answer = 0;
+	for (int i = 1; i <= v; i++)
+		nodeUnion[i] = i;
+
+	for (int i = 0; i < e; i++) {
+		int a, b, c;
+		cin >> a >> b >> c;
+		q.push({ -c,{a,b} });
+	}
+
+	while (!q.empty())
+	{
+		int from = q.top().second.first;
+		int to = q.top().second.second;
+		int dist = -q.top().first;
+		q.pop();
+
+		if (findParent1197(from, nodeUnion) != findParent1197(to, nodeUnion)) {
+			unionNodes1197(from, to, nodeUnion);
+			answer += dist;
+		}
+	}
+
+	cout << answer;
+}
+#pragma endregion
+#pragma region 4386 별자리 만들기
+int findParent4386(int a, vector<int>& nodeUnion) {
+	if (nodeUnion[a] == a) return a;
+	else return nodeUnion[a] = findParent4386(nodeUnion[a], nodeUnion);
+}
+
+void unionNodes4386(int a, int b, vector<int>& nodeUnion) {
+	a = findParent4386(a, nodeUnion);
+	b = findParent4386(b, nodeUnion);
+
+	if (a > b)
+		nodeUnion[a] = b;
+	else
+		nodeUnion[b] = a;
+}
+void sol4386() {
+	int n;
+	cin >> n;
+	double answer = 0;
+	vector<pair<int, int>> vertex(n + 1);
+	vector<int> nodeUnion(n + 1);
+	priority_queue<pair<int, pair<int, int>>> q;
+	for (int i = 1; i <= n; i++) {
+		double a, b;
+		cin >> a >> b;
+		vertex[i] = { a * 100, b * 100 };
+
+		nodeUnion[i] = i;
+	}
+
+	for (int i = 1; i < n; i++) {
+		for (int j = i + 1; j <= n; j++) {
+			int dist = sqrt(pow(vertex[i].first - vertex[j].first, 2) +
+				pow(vertex[i].second - vertex[j].second, 2));
+
+			q.push({ -dist,{i,j} });
+		}
+	}
+
+	while (!q.empty()) {
+		int from = q.top().second.first;
+		int to = q.top().second.second;
+		int dist = -q.top().first;
+		q.pop();
+
+		if (findParent4386(from, nodeUnion) != findParent4386(to, nodeUnion)) {
+			unionNodes4386(from, to, nodeUnion);
+			answer += dist;
+		}
+	}
+
+	cout << answer / 100;
+
+}
+#pragma endregion
+#pragma region 1922 네트워크 연결
+int findParent1922(int a, vector<int>& nodeUnion) {
+	if (nodeUnion[a] == a) return a;
+	else return nodeUnion[a] = findParent1922(nodeUnion[a], nodeUnion);
+}
+
+void unionNodes1922(int a, int b, vector<int>& nodeUnion) {
+	a = findParent1922(a, nodeUnion);
+	b = findParent1922(b, nodeUnion);
+
+	if (a > b)
+		nodeUnion[a] = b;
+	else
+		nodeUnion[b] = a;
+}
+void sol1922() {
+	int n, m;
+	cin >> n >> m;
+	priority_queue<pair<int, pair<int, int>>> q;
+	vector<int> nodeUnion(n + 1);
+	int answer = 0;
+
+	for (int i = 1; i <= n; i++)
+		nodeUnion[i] = i;
+
+	for (int i = 0; i < m; i++) {
+		int a, b, c;
+		cin >> a >> b >> c;
+		q.push({ -c,{a,b} });
+	}
+
+	while (!q.empty()) {
+		int from = q.top().second.first;
+		int to = q.top().second.second;
+		int dist = -q.top().first;
+		q.pop();
+
+		if (findParent1922(from, nodeUnion) != findParent1922(to, nodeUnion)) {
+			unionNodes1922(from, to, nodeUnion);
+			answer += dist;
+		}
+	}
+
+	cout << answer;
+
+}
+#pragma endregion
+#pragma region 6497 전력난
+int findParent6497(int a, vector<int>& nodeUnion) {
+	if (nodeUnion[a] == a) return a;
+	else return nodeUnion[a] = findParent6497(nodeUnion[a], nodeUnion);
+}
+
+void unionNodes6497(int a, int b, vector<int>& nodeUnion) {
+	a = findParent6497(a, nodeUnion);
+	b = findParent6497(b, nodeUnion);
+
+	if (a > b)
+		nodeUnion[a] = b;
+	else
+		nodeUnion[b] = a;
+}
+void sol6497() {
+
+	while (true) {
+		int n, m;
+		cin >> n >> m;
+
+		if (n == 0 && m == 0)
+			break;
+
+		priority_queue<pair<int, pair<int, int>>> q;
+		vector<int> nodeUnion(n);
+		int answer = 0;
+		int sum = 0;
+		for (int i = 0; i < n; i++)
+			nodeUnion[i] = i;
+
+		for (int i = 0; i < m; i++) {
+			int a, b, c;
+			cin >> a >> b >> c;
+			q.push({ -c,{a,b} });
+			sum += c;
+		}
+
+		while (!q.empty()) {
+			int from = q.top().second.first;
+			int to = q.top().second.second;
+			int dist = -q.top().first;
+			q.pop();
+
+			if (findParent6497(from, nodeUnion) != findParent6497(to, nodeUnion)) {
+				unionNodes6497(from, to, nodeUnion);
+				answer += dist;
+			}
+		}
+
+		cout << sum - answer;
+	}
+}
+#pragma endregion
+#pragma region 11404 플로이드
+void sol11404() {
+	int n, m;
+	cin >> n >> m;
+	vector<vector<int>> graph(n + 1, vector<int>(n + 1, 999999999));
+
+	for (int i = 0; i <= n; i++)
+		graph[i][i] = 0;
+
+	for (int i = 0; i < m; i++) {
+		int a, b, c;
+		cin >> a >> b >> c;
+		graph[a][b] = min(c, graph[a][b]);
+	}
+
+	for (int k = 1; k <= n; k++) {
+		for (int i = 1; i <= n; i++) {
+			for (int j = 1; j <= n; j++) {
+				graph[i][j] = min(graph[i][k] + graph[k][j], graph[i][j]);
+			}
+		}
+	}
+
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= n; j++) {
+			if (graph[i][j] == 999999999)
+				cout << 0 << ' ';
+			else
+				cout << graph[i][j] << ' ';
+		}
+		cout << '\n';
+	}
+}
+#pragma endregion
+#pragma region 11403 경로 찾기
+void sol11403() {
+	int n;
+	cin >> n;
+	vector<vector<int>> graph(n + 1, vector<int>(n + 1, 999999999));
+
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= n; j++) {
+			int a;
+			cin >> a;
+			if (a == 0)
+				graph[i][j] = 999999999;
+			else
+				graph[i][j] = a;
+		}
+
+	for (int k = 1; k <= n; k++) {
+		for (int i = 1; i <= n; i++) {
+			for (int j = 1; j <= n; j++) {
+				graph[i][j] = min(graph[i][k] + graph[k][j], graph[i][j]);
+			}
+		}
+	}
+
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= n; j++) {
+			if (graph[i][j] == 999999999)
+				cout << 0 << ' ';
+			else
+				cout << '1' << ' ';
+		}
+		cout << '\n';
+	}
+}
+#pragma endregion
+#pragma region 14588 Line Friends (Small)
+void sol14588() {
+	int n;
+	cin >> n;
+	int DEF = 999999999;
+	vector<vector<int>> graph(n + 1, vector<int>(n + 1, DEF));
+	vector<pair<int, int>> v(1);
+
+	for (int i = 1; i <= n; i++) {
+		int from, to;
+		cin >> from >> to;
+
+		for (int j = 1; j < v.size(); j++) {
+			if (i != j && (from >= v[j].first && from <= v[j].second) ||
+				(to >= v[j].first && to <= v[j].second) ||
+				(from <= v[j].first && to >= v[j].second) ||
+				(from >= v[j].first && to <= v[j].second)) {
+				graph[i][j] = 1;
+				graph[j][i] = 1;
+			}
+		}
+		v.push_back({ from,to });
+	}
+
+	for (int k = 1; k <= n; k++) {
+		for (int i = 1; i <= n; i++) {
+			for (int j = 1; j <= n; j++) {
+				graph[i][j] = min(graph[i][j], graph[i][k] + graph[k][j]);
+			}
+		}
+	}
+
+	int m;
+	cin >> m;
+	for (int i = 0; i < m; i++) {
+		int v1, v2;
+		cin >> v1 >> v2;
+		if (graph[v1][v2] == DEF)
+			cout << "-1\n";
+		else
+			cout << graph[v1][v2] << '\n';
+	}
+
+}
+#pragma endregion
+#pragma region 5052 전화번호 목록
+class tri_node5052 {
+public:
+	vector<tri_node5052*> arr;
+	bool isFinish = false;
+
+	tri_node5052() {
+		arr = vector<tri_node5052*>(10, nullptr);
+	}
+
+	bool addNum(string& num, int index, tri_node5052& tri) {
+		if (index == num.size()) {
+			tri.isFinish = true;
+			return true;
+		}
+
+		if (tri.isFinish)
+			return false;
+
+		int n = num[index] - '0';
+
+		if (tri.arr[n] == nullptr)
+			tri.arr[n] = new tri_node5052();
+
+		return addNum(num, index + 1, *tri.arr[n]);
+	}
+};
+
+void sol5052() {
+	int tc;
+	cin >> tc;
+
+	for (int t = 0; t < tc; t++) {
+		int n;
+		cin >> n;
+		bool isGood = true;
+		tri_node5052 tri;
+		vector<string> nums(n);
+		for (int i = 0; i < n; i++) {
+			cin >> nums[i];
+		}
+
+		sort(nums.begin(), nums.end());
+
+		for (int i = 0; i < n; i++) {
+			if (!tri.addNum(nums[i], 0, tri)) {
+				isGood = false;
+				break;
+			}
+		}
+
+		if (isGood)
+			cout << "YES\n";
+		else
+			cout << "NO\n";
+	}
+}
+#pragma endregion
+
+/*
+	double을 int로 변환시 0.5를 더해줘야함.
+*/
+#pragma region 4781 사탕 가게    
+void sol4781() {
+
+	while (true) {
+		int n, m;
+		double mm;
+		cin >> n >> mm;
+		vector<pair<int, int>> arr(n);
+		m = mm * 100.0 + 0.5;
+		vector<int> answer(m + 1);
+
+		if (n == 0 && m == 0.0) break;
+
+		for (int i = 0; i < n; i++) {
+			int a;
+			double b;
+			cin >> a >> b;
+			arr[i] = { a,b * 100.0 + 0.5 };
+		}
+
+		for (int i = 0; i < n; i++) {
+			for (int j = arr[i].second; j < m + 1; j++) {
+				answer[j] = max(answer[j], arr[i].first + answer[j - arr[i].second]);
+			}
+		}
+
+		cout << *max_element(answer.begin(), answer.end()) << '\n';
+	}
+}
+#pragma endregion
 /*
 	도저히 생각해내지 못했다..
 	지수 공식을 사용해서 시간복잡도를 n-> logN으로 할 수 있다니.
@@ -1586,5 +3396,149 @@ void sol1406() {
 
 	for (auto it = str.begin(); it != str.end(); it++)
 		cout << *it;
+}
+#pragma endregion
+/*
+	나누기 연산하는데 나머지 연산으로 시간 속도를 개선
+*/
+#pragma region 10430 나머지
+void sol10430() {
+	while (true) {
+		long long n;
+		long long answer = 1;
+		int cnt = 1;
+		cin >> n;
+
+		while (true) {
+			if (answer % n == 0) {
+				cout << cnt << '\n';
+				break;
+			}
+			else {
+				cnt++;
+				answer %= n;
+				answer = answer * 10 + 1;
+			}
+
+		}
+	}
+}
+#pragma endregion
+/*
+* 약수의 특성
+*  1 ~ n번째 까지의  k의 갯수 = n/k
+*/
+#pragma region 17425 약수의 합
+void sol17425() {
+	int n;
+	cin >> n;
+	long long ans = 0;
+
+	for (int i = 1; i < n + 1; i++) {
+		ans += (n / i) * i;
+	}
+
+	cout << ans;
+}
+#pragma endregion
+/*
+	단순 구현하는 문제. 
+	생각지 못한 예외가 많고 2차원 배열을 너무 어렵게 생각함.
+	swap 함수 배움.
+*/
+#pragma region 3085 사탕 게임
+void count13085(vector<vector<char>>& arr, int& answer) {
+	int n = arr.size();
+
+	for (int i = 0; i < n; i++) {
+		int cnt = 1;
+		for (int j = 0; j < n - 1; j++) {
+			if (arr[i][j] == arr[i][j + 1])
+				cnt++;
+			else {
+				if (cnt > answer)
+					answer = cnt;
+				cnt = 1;
+			}
+		}
+		if (cnt > answer)
+			answer = cnt;
+	}
+}
+void count23085(vector<vector<char>>& arr, int& answer) {
+	int n = arr.size();
+
+	for (int i = 0; i < n; i++) {
+		int cnt = 1;
+		for (int j = 0; j < n - 1; j++) {
+			if (arr[j][i] == arr[j + 1][i])
+				cnt++;
+			else {
+				if (cnt > answer)
+					answer = cnt;
+				cnt = 1;
+			}
+		}
+		if (cnt > answer)
+			answer = cnt;
+	}
+}
+void sol3085() {
+	int n;
+	cin >> n;
+	vector<vector<char>> arr(n, vector<char>(n));
+	int answer = 0;
+
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++)
+			cin >> arr[i][j];
+
+	count13085(arr, answer);
+	count23085(arr, answer);
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n - 1; j++) {
+			swap(arr[i][j], arr[i][j + 1]);
+			count13085(arr, answer);
+			count23085(arr, answer);
+			swap(arr[i][j + 1], arr[i][j]);
+
+			swap(arr[j][i], arr[j + 1][i]);
+			count13085(arr, answer);
+			count23085(arr, answer);
+			swap(arr[j + 1][i], arr[j][i]);
+		}
+	}
+
+	cout << answer;
+}
+#pragma endregion
+/*
+	이진탐색시 조건이 항상 s<=e 가 되지 않는다.
+	0과 가까운수를 구한다면 절대값으로 최대한 작은 값을 구하면 된다.
+*/
+#pragma region 14921 용액 합성하기 
+void sol14921() {
+	int n;
+	cin >> n;
+	vector<long long> arr(n);
+	for (int i = 0; i < n; i++)
+		cin >> arr[i];
+	long long answer = 1e9 + 1;
+
+	int s = 0;
+	int e = n - 1;
+
+	while (s != e) {
+		long long sum = arr[s] + arr[e];
+		if (abs(sum) < abs(answer))
+			answer = sum;
+
+		if (sum > 0) e--;
+		else if (sum < 0) s++;
+		else break;
+	}
+
+	cout << answer;
 }
 #pragma endregion

@@ -424,7 +424,6 @@ int solution42862(int n, vector<int> lost, vector<int> reserve) {
     return answer-1;
 }
 #pragma endregion
-
 #pragma region 12910 나누어 떨어지는 숫자 배열
 vector<int> solution12910(vector<int> arr, int divisor) {
     vector<int> answer;
@@ -505,7 +504,6 @@ int solution12928(int n) {
     return answer;
 }
 #pragma endregion
-
 #pragma region 12931 자릿수 더하기
 int solution12931(int n)
 {
@@ -570,7 +568,6 @@ string solution12930(string s) {
     return s;
 }
 #pragma endregion
-
 #pragma region 12926 시저 암호
 string solution12926(string s, int n) {
     string answer = "";
@@ -684,7 +681,6 @@ vector<vector<int>> solution12950(vector<vector<int>> arr1, vector<vector<int>> 
     return answer;
 }
 #pragma endregion
-
 #pragma region 12954 x만큼 간격이 있는 n개의 숫자
 vector<long long> solution12954(int x, int n) {
     vector<long long> answer;
@@ -827,8 +823,59 @@ vector<int> solution42889(int N, vector<int> stages) {
     return answer;
 }
 #pragma endregion
+#pragma region 72410 신규 아이디 추천
+string solution72410(string new_id) {
+    string answer = "";
+    int n = new_id.size();
+
+    // 대문자 -> 소문자
+    for (int i = 0; i < n; i++) {
+        if (new_id[i] >= 'A' && new_id[i] <= 'Z')
+            new_id[i] ^= 32;
+    }
+
+    string temp = "";
+    for (int i = 0; i < n; i++) {
+        if ((new_id[i] >= 'a' && new_id[i] <= 'z') || new_id[i]=='.' || new_id[i] == '_' || new_id[i] == '-' || (new_id[i] >= '0' && new_id[i] <= '9'))
+            temp += new_id[i]; 
+    }
+
+
+
+    // 2번 이상 . 하나로.
+    for (int i = 0; i < temp.size(); i++) {
+        if ( !(temp[i] == '.' && temp[i + 1] == '.')) {
+            answer += temp[i];
+        }
+    }
+    
+    // 앞 뒤 . 빼기
+    while (!answer.empty() &&answer.front() == '.') {
+        answer = answer.substr(1, answer.size() - 1);
+    }
+    while (!answer.empty() && answer.back() == '.') {
+        answer.pop_back();
+    }
+    // 15글자 맞추기
+    if(answer.size() > 15)
+        answer = answer.substr(0, 15);
+    // 뒤 . 뺴기
+    while (!answer.empty() && answer.back() == '.') {
+        answer.pop_back();
+    }
+
+    if (answer == "")
+        answer = "a";
+
+    while (answer.size() < 3)
+        answer.push_back(answer.back());
+
+    return answer;
+}
+#pragma endregion
 
 #pragma region sol
 void sol1() {
+
 }
 #pragma endregion

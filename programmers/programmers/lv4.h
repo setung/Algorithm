@@ -52,3 +52,7 @@ int solution1844(vector<vector<int>> maps) {
 }
 #pragma endregion
 
+#pragma region sol  
+void sol4() {
+}
+#pragma endregion

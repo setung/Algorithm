@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{c037adc8-48b9-4a51-9e2f-e68b778a9d54}</ProjectGuid>
-    <RootNamespace>baekjoon</RootNamespace>
+    <ProjectGuid>{0d38c8ef-89d5-47ba-8a5b-c987f0f411f7}</ProjectGuid>
+    <RootNamespace>Algospot</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -139,12 +139,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="baekjoon.cpp" />
+    <ClCompile Include="Algospot.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="bronze.h" />
-    <ClInclude Include="gold.h" />
-    <ClInclude Include="silver.h" />
+    <ClInclude Include="6_brute-force.h" />
     <ClInclude Include="sol.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

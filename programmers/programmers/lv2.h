@@ -1345,6 +1345,54 @@ long long solution62048(int w, int h) {
 }
 #pragma endregion
 
+#pragma region 72411 메뉴 리뉴얼  
+void dfs72411(string order, map<string, int> &_map, int course, string str,int l, vector<int> &courseSize, int i) {
+	if (l > order.size()) return;
+
+	if (str.size() == course) {
+		if (_map.find(str) == _map.end()) {
+			_map.insert({ str,1 });
+		}
+		else {
+			_map[str]++;
+
+			if (courseSize[i] < _map[str])
+				courseSize[i] = _map[str];
+		}
+	}
+	else {
+		dfs72411(order, _map, course, str + order[l], l + 1, courseSize,i);
+		dfs72411(order, _map, course, str , l + 1, courseSize,i);
+
+	}
+}
+
+vector<string> solution72411(vector<string> orders, vector<int> course) {
+	vector<string> answer;
+	vector<int> courseSize(course.size(), 0);
+	map<string, int> _map;
+
+	for (int i = 0; i < course.size(); i++) {
+		for (string order : orders) {
+			sort(order.begin(), order.end());
+			dfs72411(order, _map, course[i], "",0, courseSize, i );
+		}
+	}
+
+	for (int i = 0; i < course.size(); i++) {
+		for (auto it = _map.begin(); it != _map.end(); it++) {
+			if ((*it).first.size() == course[i] && (*it).second == courseSize[i])
+				answer.push_back((*it).first);
+		}
+	}
+
+	sort(answer.begin(), answer.end());
+	for (auto s : answer)
+		cout << s << ' ';
+
+	return answer;
+}
+#pragma endregion
 
 
 #pragma region sol  
