@@ -519,7 +519,158 @@ vector<int> solution70129(string s) {
 	return { cnt,cntZero };
 }
 #pragma endregion
+#pragma region 12904 가장 긴 팰린드롬
+int solution12904(string s)
+{
+	for (int answer = s.size(); answer > -1; answer--) {
+		for (int i = 0; i + answer <= s.size(); i++) {
+			int mid = i + answer / 2;
+			bool isAnswer = true;
 
+			if (answer % 2 == 0) {
+				for (int j = 0; j < answer / 2; j++) {
+					if (s[mid - j - 1] != s[mid + j]) {
+						isAnswer = false;
+						break;
+					}
+				}
+			}
+			else {
+				for (int j = 0; j < answer / 2; j++) {
+					if (s[mid - j - 1] != s[mid + j + 1]) {
+						isAnswer = false;
+						break;
+					}
+				}
+			}
+
+			if (isAnswer) return answer;
+		}
+	}
+
+	return 1;
+}
+#pragma endregion
+#pragma region 42884 단속카메라  
+int solution42884(vector<vector<int>> routes) {
+	int answer = 1;
+	vector<vector<int>> temp;
+
+	sort(routes.begin(), routes.end());
+	temp.push_back(routes[0]);
+
+	for (int i = 1; i < routes.size(); i++) {
+		bool add = false;
+		for (int j = 0; j < temp.size(); j++) {
+			if (!(routes[i][0] >= temp[j][0] && routes[i][0] <= temp[j][1])) {
+				add = true;
+				temp.clear();
+				break;
+			}
+		}
+
+		if (add)
+			answer++;
+
+		temp.push_back(routes[i]);
+	}
+
+	return answer;
+}
+#pragma endregion
+#pragma region 49994 방문 길이  
+int solution49994(string dirs) {
+	int x = 5, y = 5;
+	set < pair<pair<int, int>, pair<int, int>>> _set;
+
+	for (char dir : dirs) {
+		if (dir == 'U') {
+			if (y + 1 < 11) {
+				y++;
+				_set.insert({ {y - 1,x},{y,x} });
+			}
+		}
+		else if (dir == 'D') {
+			if (y - 1 > -1) {
+				y--;
+				_set.insert({ {y,x},{y + 1,x} });
+			}
+		}
+		else if (dir == 'R') {
+			if (x + 1 < 11) {
+				x++;
+				_set.insert({ {y,x - 1},{y,x} });
+			}
+		}
+		else if (dir == 'L') {
+			if (x - 1 > -1) {
+				x--;
+				_set.insert({ {y,x },{y,x + 1} });
+			}
+		}
+	}
+
+	return _set.size();
+}
+#pragma endregion
+#pragma region 60059 자물쇠와 열쇠
+void rotateKey60059(int m, vector<vector<int>>& key) {
+	vector<vector<int>> temp(m, vector<int>(m));
+
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < m; j++) {
+			temp[i][j] = key[m - j - 1][i];
+		}
+	}
+
+	key = temp;
+}
+
+bool check60059(int x, int y, vector<vector<int>>& key, vector<vector<int>> board) {
+	int m = key.size();
+
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < m; j++) {
+			board[x + i][y + j] = board[x + i][y + j] ^ key[i][j];
+		}
+	}
+
+	for (int i = m - 1; i < board.size() - m + 1; i++) {
+		for (int j = m - 1; j < board.size() - m + 1; j++) {
+			if (board[i][j] != 1)
+				return false;
+		}
+	}
+
+	return true;
+}
+
+bool solution60059(vector<vector<int>> key, vector<vector<int>> lock) {
+	bool answer = false;
+	int n = lock.size();
+	int m = key.size();
+
+	vector<vector<int>> board(n + (m - 1) * 2, vector<int>(n + (m - 1) * 2));
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			board[m - 1 + i][m - 1 + j] = lock[i][j];
+		}
+	}
+
+	for (int r = 0; r < 4; r++) {
+		for (int i = 0; i < board.size() - m + 1; i++) {
+			for (int j = 0; j < board.size() - m + 1; j++) {
+				if (check60059(i, j, key, board))
+					return true;
+			}
+		}
+		rotateKey60059(m, key);
+	}
+
+	return answer;
+}
+#pragma endregion
 
 /*
 	2차원 배열로 풀었으나 시간초과
@@ -783,8 +934,49 @@ long long solution43238(int n, vector<int> times) {
 	return answer;
 }
 #pragma endregion
+/*
+	잘 모르겠음.
+*/
+#pragma region 42627 디스크 컨트롤러  
+
+struct cmp42627
+{
+	bool operator()(vector<int> v1, vector<int> v2) {
+		return v1[1] > v2[1];
+	}
+};
+
+int solution42627(vector<vector<int>> jobs) {
+	int answer = 0;
+	int idx = 0, time = 0;
+	priority_queue < vector<int>, vector<vector<int>>, cmp42627> q;
+	
+	sort(jobs.begin(), jobs.end());
+
+	while (idx < jobs.size() || !q.empty()) {
+		if (idx < jobs.size() && time >= jobs[idx][0]) {
+			q.push(jobs[idx++]);
+			continue;
+		}
+
+		if (!q.empty()) {
+			time += q.top()[1];
+			answer += time - q.top()[0];
+			q.pop();
+		}
+		else
+			time = jobs[idx][0];
+	}
+
+	return answer / jobs.size();
+}
+#pragma endregion
+
+
+
 
 #pragma region sol  
 void sol3() {
-}
+
+} 
 #pragma endregion

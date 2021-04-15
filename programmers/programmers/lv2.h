@@ -702,7 +702,7 @@ vector<int> solution64065(string s) {
 		if (c >= '0' && c <= '9')
 			temp += c;
 		else if (temp != "" && (c == '}' || c == ',')) {
-			if ( m.find(stoi(temp)) == m.end())
+			if (m.find(stoi(temp)) == m.end())
 				m.insert({ stoi(temp),1 });
 			else
 				m[stoi(temp)]++;
@@ -728,19 +728,19 @@ int solution17677(string str1, string str2) {
 	map<string, int> m2;
 	int sum = 0;
 	int n = 0;
-	for(int i =0; i<str1.size(); i++)
+	for (int i = 0; i < str1.size(); i++)
 		if (str1[i] >= 'A' && str1[i] <= 'Z')
 			str1[i] ^= 32;
 	for (int i = 0; i < str2.size(); i++)
 		if (str2[i] >= 'A' && str2[i] <= 'Z')
 			str2[i] ^= 32;
 
-	for (int i = 0; i < str1.size()-1; i++) {
+	for (int i = 0; i < str1.size() - 1; i++) {
 
 		if (str1[i] >= 'a' && str1[i] <= 'z' &&
 			str1[i + 1] >= 'a' && str1[i + 1] <= 'z') {
 			string temp = str1.substr(i, 2);
-			
+
 			if (m1.find(temp) == m1.end())
 				m1.insert({ temp,1 });
 			else
@@ -915,6 +915,147 @@ vector<int> solution42842(int brown, int yellow) {
 	}
 }
 #pragma endregion
+#pragma region 72411 메뉴 리뉴얼  
+void dfs72411(string order, map<string, int>& _map, int course, string str, int l, vector<int>& courseSize, int i) {
+	if (l > order.size()) return;
+
+	if (str.size() == course) {
+		if (_map.find(str) == _map.end()) {
+			_map.insert({ str,1 });
+		}
+		else {
+			_map[str]++;
+
+			if (courseSize[i] < _map[str])
+				courseSize[i] = _map[str];
+		}
+	}
+	else {
+		dfs72411(order, _map, course, str + order[l], l + 1, courseSize, i);
+		dfs72411(order, _map, course, str, l + 1, courseSize, i);
+	}
+}
+
+vector<string> solution72411(vector<string> orders, vector<int> course) {
+	vector<string> answer;
+	vector<int> courseSize(course.size(), 0);
+	map<string, int> _map;
+
+	for (int i = 0; i < course.size(); i++) {
+		for (string order : orders) {
+			sort(order.begin(), order.end());
+			dfs72411(order, _map, course[i], "", 0, courseSize, i);
+		}
+	}
+
+	for (int i = 0; i < course.size(); i++) {
+		for (auto it = _map.begin(); it != _map.end(); it++) {
+			if ((*it).first.size() == course[i] && (*it).second == courseSize[i])
+				answer.push_back((*it).first);
+		}
+	}
+
+	sort(answer.begin(), answer.end());
+	for (auto s : answer)
+		cout << s << ' ';
+
+	return answer;
+}
+#pragma endregion
+#pragma region 17686 [3차] 파일명 정렬 
+class File17686 {
+public:
+	string filename;
+	string head;
+	int number;
+
+	File17686(string name) :filename(name) {}
+};
+
+bool cmp17686(const File17686& f1, const File17686& f2) {
+	if (f1.head == f2.head) return f1.number < f2.number;
+	return f1.head < f2.head;
+}
+
+vector<string> solution17686(vector<string> files) {
+	vector<string> answer;
+	vector<File17686> newfiles;
+
+	for (auto file : files) {
+		File17686 f = File17686(file);
+		string head;
+		int number = 0;
+		bool isNum = false;
+
+		for (int i = 0; i < file.size(); i++) {
+			if (isdigit(file[i])) {
+				isNum = true;
+				if ((number * 10) + (file[i] - '0') <= 99999)
+					number = (number * 10) + (file[i] - '0');
+				else break;
+			}
+			else {
+				if (isNum)
+					break;
+
+				if (file[i] >= 65 && file[i] <= 90)
+					file[i] ^= 32;
+				head += file[i];
+			}
+		}
+
+		f.head = head;
+		f.number = number;
+
+		newfiles.push_back(f);
+	}
+
+	stable_sort(newfiles.begin(), newfiles.end(), cmp17686);
+
+	for (auto f : newfiles)
+		answer.push_back(f.filename);
+
+	return answer;
+}
+#pragma endregion
+#pragma region 17687 [3차] n진수 게임  
+string solution17687(int n, int t, int m, int p) {
+	string answer;
+	char ch[] = { '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F' };
+
+	int num = 0;
+	int order = 0;
+
+	while (answer.size() != t) {
+		string nnum;
+		int tmp = num;
+
+		if (num == 0) {
+			nnum = "0";
+		}
+
+		while (tmp != 0) {
+			nnum = ch[tmp % n] + nnum;
+			tmp /= n;
+		}
+
+		for (char c : nnum) {
+			if (order == p - 1) {
+				answer += c;
+
+				if (answer.size() == t)
+					break;
+			}
+			order = (order + 1) % m;
+		}
+
+		num++;
+	}
+
+	return answer;
+}
+#pragma endregion
+
 
 /*
 	스킬트리
@@ -1232,7 +1373,7 @@ int solution42885(vector<int> people, int limit) {
 			answer++;
 		}
 	}
-	
+
 	return answer;
 }
 #pragma endregion
@@ -1241,41 +1382,41 @@ int solution42885(vector<int> people, int limit) {
 */
 #pragma region 17680 [1차] 캐시 
 int solution17680(int cacheSize, vector<string> cities) {
-		int answer = 0;
-		deque<string> dq;
+	int answer = 0;
+	deque<string> dq;
 
-		if (cacheSize == 0)
-			return cities.size() * 5;
+	if (cacheSize == 0)
+		return cities.size() * 5;
 
-		for (int j = 0; j < cities.size(); j++) {
-			for (int i = 0; i < cities[j].size(); i++) {
-				if (cities[j][i] >= 'A' && cities[j][i] <= 'Z')
-					cities[j][i] ^= 32;
-			}
+	for (int j = 0; j < cities.size(); j++) {
+		for (int i = 0; i < cities[j].size(); i++) {
+			if (cities[j][i] >= 'A' && cities[j][i] <= 'Z')
+				cities[j][i] ^= 32;
 		}
+	}
 
-		for (string city : cities) {
-			bool isExist = false;
-			if(!dq.empty())
-				for (auto it = dq.begin(); it != dq.end(); it++) {
-					if (*it == city) {
-						answer += 1;
-						isExist = true;
-						dq.erase(it);
-						dq.push_back(city);
-						break;
-					}
+	for (string city : cities) {
+		bool isExist = false;
+		if (!dq.empty())
+			for (auto it = dq.begin(); it != dq.end(); it++) {
+				if (*it == city) {
+					answer += 1;
+					isExist = true;
+					dq.erase(it);
+					dq.push_back(city);
+					break;
 				}
-
-			if (!isExist) {
-				if (dq.size() == cacheSize && !dq.empty())
-					dq.pop_front();	
-				dq.push_back(city);
-				answer += 5;
 			}
-		}
 
-		return answer;
+		if (!isExist) {
+			if (dq.size() == cacheSize && !dq.empty())
+				dq.pop_front();
+			dq.push_back(city);
+			answer += 5;
+		}
+	}
+
+	return answer;
 }
 #pragma endregion
 /*
@@ -1317,7 +1458,7 @@ string solution12899(int n) {
 		else
 			answer = to_string(temp) + answer;
 	}
-	
+
 	return answer;
 }
 #pragma endregion
@@ -1344,59 +1485,96 @@ long long solution62048(int w, int h) {
 	return (W * H) - tmp;
 }
 #pragma endregion
+/*
+	논란이 있는 문제 같음.
+*/
+#pragma region 42860 조이스틱  
+int solution42860(string name) {
+	int answer = 0;
+	string temp(name.size(), 'A');
+	int i = 0;
 
-#pragma region 72411 메뉴 리뉴얼  
-void dfs72411(string order, map<string, int> &_map, int course, string str,int l, vector<int> &courseSize, int i) {
-	if (l > order.size()) return;
-
-	if (str.size() == course) {
-		if (_map.find(str) == _map.end()) {
-			_map.insert({ str,1 });
+	while (temp != name) {
+		if (name[i] != temp[i]) {
+			answer += (name[i] - temp[i] > 'Z' - name[i] + 1 ? 'Z' - name[i] + 1 : name[i] - temp[i]);
+			temp[i] = name[i];
 		}
-		else {
-			_map[str]++;
 
-			if (courseSize[i] < _map[str])
-				courseSize[i] = _map[str];
+		for (int move = 1; move < name.size(); move++) {
+			if (name[(i + move) % name.size()] != temp[(i + move) % temp.size()]) {
+				answer += move;
+				i = (i + move) % name.size();
+				break;
+			}
+			else if (name[(i - move + name.size()) % name.size()] != temp[(i - move + name.size()) % temp.size()]) {
+				answer += move;
+				i = (i - move + name.size()) % name.size();
+				break;
+			}
 		}
 	}
-	else {
-		dfs72411(order, _map, course, str + order[l], l + 1, courseSize,i);
-		dfs72411(order, _map, course, str , l + 1, courseSize,i);
 
-	}
+	return answer;
 }
+#pragma endregion
+/*
+	DP 문제임.
+*/
+#pragma region 12905 가장 큰 정사각형 찾기
+int solution12905(vector<vector<int>> board)
+{
+	int answer = 0;
 
-vector<string> solution72411(vector<string> orders, vector<int> course) {
-	vector<string> answer;
-	vector<int> courseSize(course.size(), 0);
-	map<string, int> _map;
-
-	for (int i = 0; i < course.size(); i++) {
-		for (string order : orders) {
-			sort(order.begin(), order.end());
-			dfs72411(order, _map, course[i], "",0, courseSize, i );
+	for (int i = 1; i < board.size(); i++) {
+		for (int j = 1; j < board[i].size(); j++) {
+			if (board[i][j] == 1) {
+				board[i][j] = min(board[i - 1][j - 1], min(board[i][j - 1], board[i - 1][j])) + 1;
+			}
 		}
 	}
 
-	for (int i = 0; i < course.size(); i++) {
-		for (auto it = _map.begin(); it != _map.end(); it++) {
-			if ((*it).first.size() == course[i] && (*it).second == courseSize[i])
-				answer.push_back((*it).first);
-		}
+	for (auto arr : board) {
+		answer = max(*max_element(arr.begin(), arr.end()), answer);
+
 	}
 
-	sort(answer.begin(), answer.end());
-	for (auto s : answer)
-		cout << s << ' ';
+	return answer * answer;
+}
+#pragma endregion
+/*
+	dp의 문제를 너무 어렵게 생각함.;;
+*/
+#pragma region 12913 땅따먹기 
+int solution12913(vector<vector<int> > land)
+{
+	int answer = 0;
+
+	for (int i = 0; i < land.size()-1; i++) {
+		land[i + 1][0] = max(land[i][1], max(land[i][2], land[i][3])) + land[i + 1][0];
+		land[i + 1][1] = max(land[i][0], max(land[i][2], land[i][3])) + land[i + 1][1];
+		land[i + 1][2] = max(land[i][1], max(land[i][0], land[i][3])) + land[i + 1][2];
+		land[i + 1][3] = max(land[i][1], max(land[i][2], land[i][0])) + land[i + 1][3];
+	}
+	
+	answer = *max_element(land.back().begin(), land.back().end());
 
 	return answer;
 }
 #pragma endregion
 
 
+
+
+
 #pragma region sol  
 void sol2() {
+	/*cout << solution({ 
+		{"100", "ryan", "music", "2"},
+		{"200", "apeach", "math", "2"},
+		{"300", "tube", "computer", "3"},
+		{"400", "con", "computer", "4"},
+		{"500", "muzi", "music", "3"},
+		{"600", "apeach", "music", "2"} });*/
 }
 #pragma endregion
 
