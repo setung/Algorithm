@@ -873,6 +873,18 @@ string solution72410(string new_id) {
     return answer;
 }
 #pragma endregion
+#pragma region 76501 음양 더하기
+int solution76501(vector<int> absolutes, vector<bool> signs) {
+    int answer = 0;
+
+    for (int i = 0; i < absolutes.size(); i++) {
+        if (signs[i]) answer += absolutes[i];
+        else answer -= absolutes[i];
+    }
+
+    return answer;
+}
+#pragma endregion
 
 #pragma region sol
 void sol1() {

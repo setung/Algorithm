@@ -1055,7 +1055,50 @@ string solution17687(int n, int t, int m, int p) {
 	return answer;
 }
 #pragma endregion
+#pragma region 76502 괄호 회전하기  
+bool isCorrect76502(string& s) {
+	stack<char> st;
 
+	for (char c : s) {
+		if (c == '[' || c == '(' || c == '{')
+			st.push(c);
+		else {
+			if (st.empty()) return false;
+			char top = st.top();
+
+			if (top == '[') {
+				if (c == ']') st.pop();
+			}
+			else if (top == '{') {
+				if (c == '}') st.pop();
+			}
+			else if (top == '(') {
+				if (c == ')') st.pop();
+			}
+			else
+				return false;
+
+		}
+	}
+
+	return st.empty();
+}
+
+int solution76502(string s) {
+	int answer = 0;
+
+	for (int i = 0; i < s.size(); i++) {
+		if (isCorrect76502(s))
+			answer++;
+
+		s.push_back(s.front());
+		s.erase(s.begin());
+	}
+
+
+	return answer;
+}
+#pragma endregion
 
 /*
 	스킬트리
@@ -1564,10 +1607,9 @@ int solution12913(vector<vector<int> > land)
 
 
 
-
-
 #pragma region sol  
 void sol2() {
+
 	/*cout << solution({ 
 		{"100", "ryan", "music", "2"},
 		{"200", "apeach", "math", "2"},
